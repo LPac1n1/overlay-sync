@@ -5,13 +5,12 @@ function Canvas() {
 
   const onCanvasClick = (event) => {
     if (event.target.tagName == "IMG") return isMediaSelected(event);
-    if (event.target.tagName != "IMG") {
-      setImages(
-        images.map((img) => {
-          return { ...img, isSelected: false };
-        })
-      );
-    }
+
+    setImages(
+      images.map((img) => {
+        return { ...img, isSelected: false };
+      })
+    );
   };
 
   const onCanvasDragOver = (event) => {
@@ -32,9 +31,10 @@ function Canvas() {
             url: imageReader.result,
             name: file.name,
             isSelected: false,
+            position: { x: event.clientX, y: event.clientY },
             dimensions: {
-              width: image.width / 4,
-              height: image.height / 4,
+              width: image.width / 5,
+              height: image.height / 5,
             },
           };
           setImages([...images, newImage]);
@@ -52,20 +52,20 @@ function Canvas() {
     const selectedMediaId = parseInt(SelectedMedia.id);
 
     setImages(() => {
-      const updateSelectedImage = images.map((img) => {
+      const updateSelectedMedia = images.map((img) => {
         if (selectedMediaId != img.id && img.isSelected == true)
           return { ...img, isSelected: false };
         if (selectedMediaId == img.id) return { ...img, isSelected: true };
         return img;
       });
-      return updateSelectedImage;
+      return updateSelectedMedia;
     });
   };
 
   const getMediaStyle = (media) => {
     return media.isSelected
-      ? { outline: "solid 2.5px cadetblue" }
-      : { outline: "none" };
+      ? { outline: "solid 2.5px cadetblue", cursor: "grab" }
+      : { outline: "none", cursor: "auto" };
   };
 
   return (
@@ -84,8 +84,13 @@ function Canvas() {
           alt={img.name}
           width={img.dimensions.width}
           height={img.dimensions.height}
-          style={getMediaStyle(img)}
-          className="image absolute"
+          style={{
+            position: "absolute",
+            left: img.position.x - img.dimensions.width / 2,
+            top: img.position.y - img.dimensions.height / 2,
+            ...getMediaStyle(img),
+          }}
+          draggable="false"
         />
       ))}
     </div>

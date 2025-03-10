@@ -62,6 +62,32 @@ function Canvas() {
     });
   };
 
+  const dragMedia = (event, media, id) => {
+    const selectedMedia = media.find((media) => media.id === id);
+    const startX = event.clientX - selectedMedia.position.x;
+    const startY = event.clientY - selectedMedia.position.y;
+
+    const onMouseMove = (event) => {
+      const newX = event.clientX - startX;
+      const newY = event.clientY - startY;
+
+      setImages(() => {
+        const updateMediaPosition = media.map((img) => {
+          if (img.id === id) return { ...img, position: { x: newX, y: newY } };
+          return img;
+        });
+        return updateMediaPosition;
+      });
+    };
+
+    const onMouseUp = () => {
+      document.removeEventListener("mousemove", onMouseMove);
+    };
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  };
+
   const getMediaStyle = (media) => {
     return media.isSelected
       ? { outline: "solid 2.5px cadetblue", cursor: "grab" }
@@ -84,6 +110,7 @@ function Canvas() {
           alt={img.name}
           width={img.dimensions.width}
           height={img.dimensions.height}
+          onMouseDown={(event) => dragMedia(event, images, img.id)}
           style={{
             position: "absolute",
             left: img.position.x - img.dimensions.width / 2,

@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { useEffect } from "react";
 
 function Canvas() {
   let [images, setImages] = useState([]);
 
   const onCanvasClick = (event) => {
-    if (event.target.tagName == "IMG") return isMediaSelected(event);
+    if (event.target.tagName == "IMG") return;
 
     setImages(
       images.map((img) => {
@@ -47,23 +48,22 @@ function Canvas() {
     }
   };
 
-  const isMediaSelected = (event) => {
-    const SelectedMedia = event.target;
-    const selectedMediaId = parseInt(SelectedMedia.id);
+  const selectMedia = (media, setMedia, id) => {
+    setMedia(() => {
+      const updateSelectedMedia = media.map((med) => {
+        if (id != med.id && med.isSelected == true)
+          return { ...med, isSelected: false };
 
-    setImages(() => {
-      const updateSelectedMedia = images.map((img) => {
-        if (selectedMediaId != img.id && img.isSelected == true)
-          return { ...img, isSelected: false };
-        if (selectedMediaId == img.id) return { ...img, isSelected: true };
-        return img;
+        if (id == med.id) return { ...med, isSelected: true };
+
+        return med;
       });
       return updateSelectedMedia;
     });
   };
 
-  const dragMedia = (event, media, id) => {
-    const selectedMedia = media.find((media) => media.id === id);
+  const dragMedia = (event, media, setMedia, id) => {
+    const selectedMedia = media.find((med) => med.id === id);
     const startX = event.clientX - selectedMedia.position.x;
     const startY = event.clientY - selectedMedia.position.y;
 
@@ -71,10 +71,10 @@ function Canvas() {
       const newX = event.clientX - startX;
       const newY = event.clientY - startY;
 
-      setImages(() => {
-        const updateMediaPosition = media.map((img) => {
-          if (img.id === id) return { ...img, position: { x: newX, y: newY } };
-          return img;
+      setMedia(() => {
+        const updateMediaPosition = media.map((med) => {
+          if (med.id === id) return { ...med, position: { x: newX, y: newY } };
+          return med;
         });
         return updateMediaPosition;
       });
@@ -88,12 +88,25 @@ function Canvas() {
     document.addEventListener("mouseup", onMouseUp);
   };
 
+  // Delete Media
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (event.key === "Delete") {
+        setImages((images) => images.filter((img) => !img.isSelected));
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [setImages]);
+
   const getMediaStyle = (media) => {
     return media.isSelected
       ? { outline: "solid 2.5px cadetblue", cursor: "grab" }
       : { outline: "none", cursor: "auto" };
   };
-
   return (
     <div
       id="canvas"
@@ -110,7 +123,8 @@ function Canvas() {
           alt={img.name}
           width={img.dimensions.width}
           height={img.dimensions.height}
-          onMouseDown={(event) => dragMedia(event, images, img.id)}
+          onClick={() => selectMedia(images, setImages, img.id)}
+          onMouseDown={(event) => dragMedia(event, images, setImages, img.id)}
           style={{
             position: "absolute",
             left: img.position.x - img.dimensions.width / 2,

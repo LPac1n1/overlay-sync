@@ -5,7 +5,7 @@ function Canvas() {
   let [images, setImages] = useState([]);
 
   const onCanvasClick = (event) => {
-    if (event.target.tagName == "IMG") return;
+    if (event.target.id.startsWith("image")) return;
 
     setImages(
       images.map((img) => {
@@ -28,7 +28,7 @@ function Canvas() {
         const image = new Image();
         image.onload = () => {
           const newImage = {
-            id: images.length,
+            id: `image-${images.length}`,
             url: imageReader.result,
             name: file.name,
             isSelected: false,
@@ -48,21 +48,16 @@ function Canvas() {
     }
   };
 
-  const selectMedia = (media, setMedia, id) => {
+  const selectAndDragMedia = (event, media, setMedia, id) => {
     setMedia(() => {
-      const updateSelectedMedia = media.map((med) => {
-        if (id != med.id && med.isSelected == true)
-          return { ...med, isSelected: false };
-
+      const updateMediaSelect = media.map((med) => {
+        if (id != med.id) return { ...med, isSelected: false };
         if (id == med.id) return { ...med, isSelected: true };
-
         return med;
       });
-      return updateSelectedMedia;
+      return updateMediaSelect;
     });
-  };
 
-  const dragMedia = (event, media, setMedia, id) => {
     const selectedMedia = media.find((med) => med.id === id);
     const startX = event.clientX - selectedMedia.position.x;
     const startY = event.clientY - selectedMedia.position.y;
@@ -73,8 +68,9 @@ function Canvas() {
 
       setMedia(() => {
         const updateMediaPosition = media.map((med) => {
-          if (med.id === id) return { ...med, position: { x: newX, y: newY } };
-          return med;
+          if (med.id === id)
+            return { ...med, isSelected: true, position: { x: newX, y: newY } };
+          return { ...med, isSelected: false };
         });
         return updateMediaPosition;
       });
@@ -87,6 +83,61 @@ function Canvas() {
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
   };
+
+  const [eventListenerMap, setEventListenerMap] = useState(new Map());
+  const resizingPossibility = (mediaDiv, id) => {
+    const isCursorOnBorder = (event) => {
+      const mediaDiv = event.target;
+      const mediaDivPosition = mediaDiv.getBoundingClientRect();
+      const { clientX, clientY } = event;
+      const borderSize = 5;
+
+      const onLeft =
+        clientX >= mediaDivPosition.left &&
+        clientX <= mediaDivPosition.left + borderSize;
+      const onRight =
+        clientX <= mediaDivPosition.right &&
+        clientX >= mediaDivPosition.right - borderSize;
+      const onTop =
+        clientY >= mediaDivPosition.top &&
+        clientY <= mediaDivPosition.top + borderSize;
+      const onBottom =
+        clientY <= mediaDivPosition.bottom &&
+        clientY >= mediaDivPosition.bottom - borderSize;
+
+      if (onLeft || onRight) {
+        mediaDiv.style.cursor = "ew-resize";
+      } else if (onTop || onBottom) {
+        mediaDiv.style.cursor = "ns-resize";
+      } else {
+        mediaDiv.style.cursor = "auto";
+      }
+    };
+
+    mediaDiv.addEventListener("mousemove", isCursorOnBorder);
+    setEventListenerMap(eventListenerMap.set(id, isCursorOnBorder));
+  };
+
+  // isSelected media property handler
+  useEffect(() => {
+    images.forEach((img) => {
+      const imageDiv = document.getElementById(img.id);
+
+      if (img.isSelected) {
+        resizingPossibility(imageDiv, img.id);
+        return;
+      }
+
+      if (eventListenerMap.has(img.id)) {
+        imageDiv.removeEventListener("mousemove", eventListenerMap.get(img.id));
+        eventListenerMap.delete(img.id);
+
+        imageDiv.style.cursor = "auto";
+      }
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [images.map((img) => img.isSelected).join(",")]);
 
   // Delete Media
   useEffect(() => {
@@ -102,11 +153,6 @@ function Canvas() {
     };
   }, [setImages]);
 
-  const getMediaStyle = (media) => {
-    return media.isSelected
-      ? { outline: "solid 2.5px cadetblue", cursor: "grab" }
-      : { outline: "none", cursor: "auto" };
-  };
   return (
     <div
       id="canvas"
@@ -116,23 +162,40 @@ function Canvas() {
       onDrop={onCanvasDrop}
     >
       {images.map((img) => (
-        <img
+        <div
           key={img.id}
           id={img.id}
-          src={img.url}
           alt={img.name}
-          width={img.dimensions.width}
-          height={img.dimensions.height}
-          onClick={() => selectMedia(images, setImages, img.id)}
-          onMouseDown={(event) => dragMedia(event, images, setImages, img.id)}
+          onMouseDown={(event) =>
+            selectAndDragMedia(event, images, setImages, img.id)
+          }
           style={{
             position: "absolute",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            background: "none",
+            width: img.dimensions.width + 10,
+            height: img.dimensions.height + 10,
             left: img.position.x - img.dimensions.width / 2,
             top: img.position.y - img.dimensions.height / 2,
-            ...getMediaStyle(img),
+            border: img.isSelected ? "2.5px solid cornflowerblue" : "none",
+            zIndex: img.isSelected ? 1000 : 10,
           }}
-          draggable="false"
-        />
+        >
+          <img
+            src={img.url}
+            width={img.dimensions.width}
+            height={img.dimensions.height}
+            draggable="false"
+            style={{
+              position: "relative",
+              pointerEvents: "none",
+              userSelect: "none",
+              zIndex: img.isSelected ? 100 : 0,
+            }}
+          />
+        </div>
       ))}
     </div>
   );

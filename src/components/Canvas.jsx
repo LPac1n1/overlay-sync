@@ -83,14 +83,27 @@ function Canvas() {
     const { clientX, clientY } = event;
     const border = 5;
 
+    let onLeft = clientX >= rect.left && clientX <= rect.left + border;
+    let onRight = clientX <= rect.right && clientX >= rect.right - border;
+    let onTop = clientY >= rect.top && clientY <= rect.top + border;
+    let onBottom = clientY <= rect.bottom && clientY >= rect.bottom - border;
+
     event.target.style.cursor =
-      (clientX >= rect.left && clientX <= rect.left + border) ||
-      (clientX <= rect.right && clientX >= rect.right - border)
+      onLeft && onTop
+        ? "nw-resize"
+        : onLeft && onBottom
+        ? "sw-resize"
+        : onRight && onTop
+        ? "ne-resize"
+        : onRight && onBottom
+        ? "se-resize"
+        : onLeft || onRight
         ? "ew-resize"
-        : (clientY >= rect.top && clientY <= rect.top + border) ||
-          (clientY <= rect.bottom && clientY >= rect.bottom - border)
+        : onTop || onBottom
         ? "ns-resize"
         : "auto";
+
+    return { onLeft, onRight, onTop, onBottom };
   };
 
   useEffect(() => {

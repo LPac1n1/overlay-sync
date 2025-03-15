@@ -1,40 +1,76 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { v4 as uuid } from "uuid";
 
 function Canvas() {
   const [images, setImages] = useState([]);
+  const [imagesIndex, setImagesIndex] = useState([]);
 
   const onCanvasClick = (event) => {
-    if (!event.target.id.startsWith("image")) {
-      setImages((prev) => prev.map((img) => ({ ...img, isSelected: false })));
-    }
-  };
+    if (
+      event.target.id.startsWith("image") ||
+      event.target.id.endsWith("selection")
+    )
+      return;
 
-  const onCanvasDragOver = (event) => event.preventDefault();
+    // Check if there is any image selected.
+    let hasImageSelected = null;
+    images.map((image) => image.isSelected).includes(true)
+      ? (hasImageSelected = true)
+      : (hasImageSelected = false);
+
+    // If so, unselect it.
+    if (hasImageSelected) {
+      const allDOMElements = document.querySelectorAll("*");
+      allDOMElements.forEach((element) => {
+        element.style.cursor = "auto";
+      });
+
+      return setImages((prev) =>
+        prev.map((image) => ({ ...image, isSelected: false }))
+      );
+    }
+
+    // If you don't have it, nothing happens.
+    return;
+  };
 
   const onCanvasDrop = (event) => {
     event.preventDefault();
-    const files = event.dataTransfer.files;
 
-    Array.from(files).forEach((file) => {
-      if (!file.type.startsWith("image/")) {
-        alert("Por favor, insira uma imagem válida.");
-        return;
+    const files = Array.from(event.dataTransfer.files);
+    files.forEach((file) => {
+      if (!file.type.startsWith("image")) {
+        return alert("Insira uma imagem válida!");
       }
+
       const reader = new FileReader();
       reader.onload = () => {
         const image = new Image();
         image.onload = () => {
-          setImages((prev) => [
-            ...prev,
-            {
-              id: `image-${prev.length}`,
-              url: reader.result,
-              name: file.name,
-              isSelected: false,
-              position: { x: event.clientX, y: event.clientY },
-              dimensions: { width: image.width / 5, height: image.height / 5 },
-            },
-          ]);
+          setImagesIndex((prev) => {
+            return [...prev, prev.length + 1];
+          });
+
+          setImages((prev) => {
+            const width = image.width / 5;
+            const height = image.height / 5;
+
+            return [
+              ...prev,
+              {
+                id: `image-${uuid()}`,
+                url: reader.result,
+                name: file.name,
+                dimensions: { width, height },
+                position: {
+                  x: event.clientX - width / 2,
+                  y: event.clientY - height / 2,
+                },
+                isSelected: false,
+                zIndex: prev.length + 1,
+              },
+            ];
+          });
         };
         image.src = reader.result;
       };
@@ -42,29 +78,50 @@ function Canvas() {
     });
   };
 
-  const selectAndDragMedia = (event, id) => {
-    setImages((prev) =>
-      prev.map((img) => ({ ...img, isSelected: img.id === id }))
-    );
+  const onImageMouseDown = (event) => {
+    const selected = images.find((image) => image.id === event.target.id);
 
-    const selected = images.find((img) => img.id === id);
-    if (!selected) return;
+    let hasImageSelected = null;
+    selected.isSelected
+      ? (hasImageSelected = true)
+      : (hasImageSelected = false);
+
+    if (!hasImageSelected) {
+      setImages((prev) =>
+        prev.map((image) =>
+          image.id === selected.id
+            ? { ...image, isSelected: true, zIndex: imagesIndex.at(-1) }
+            : {
+                ...image,
+                isSelected: false,
+                zIndex: image.zIndex > 0 ? image.zIndex - 1 : image.zIndex,
+              }
+        )
+      );
+    }
 
     const startX = event.clientX - selected.position.x;
     const startY = event.clientY - selected.position.y;
 
     const onMouseMove = (event) => {
+      event.target.style.cursor = "move";
+
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+      const imageWidth = selected.dimensions.width + 10;
+      const imageHeight = selected.dimensions.height + 10;
+
+      let newX = event.clientX - startX;
+      let newY = event.clientY - startY;
+
+      newX = Math.max(0, Math.min(screenWidth - imageWidth, newX));
+      newY = Math.max(0, Math.min(screenHeight - imageHeight, newY));
+
       setImages((prev) =>
-        prev.map((img) =>
-          img.id === id
-            ? {
-                ...img,
-                position: {
-                  x: event.clientX - startX,
-                  y: event.clientY - startY,
-                },
-              }
-            : img
+        prev.map((image) =>
+          image.id === selected.id
+            ? { ...image, position: { x: newX, y: newY } }
+            : image
         )
       );
     };
@@ -72,110 +129,124 @@ function Canvas() {
     const onMouseUp = () => {
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseup", onMouseUp);
+      event.target.style.cursor = "auto";
     };
 
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
   };
 
-  const isCursorOnSelection = (event) => {
-    const rect = event.target.getBoundingClientRect();
-    const { clientX, clientY } = event;
-    const border = 5;
-
-    let onLeft = clientX >= rect.left && clientX <= rect.left + border;
-    let onRight = clientX <= rect.right && clientX >= rect.right - border;
-    let onTop = clientY >= rect.top && clientY <= rect.top + border;
-    let onBottom = clientY <= rect.bottom && clientY >= rect.bottom - border;
-
-    event.target.style.cursor =
-      onLeft && onTop
-        ? "nw-resize"
-        : onLeft && onBottom
-        ? "sw-resize"
-        : onRight && onTop
-        ? "ne-resize"
-        : onRight && onBottom
-        ? "se-resize"
-        : onLeft || onRight
-        ? "ew-resize"
-        : onTop || onBottom
-        ? "ns-resize"
-        : "auto";
-
-    return { onLeft, onRight, onTop, onBottom };
+  const onSelectionMouseMove = (event) => {
+    if (event.target.id.endsWith("selection")) {
+      const rect = event.target.getBoundingClientRect();
+      const { clientX, clientY } = event;
+      const border = 5;
+      let onLeft = clientX >= rect.left && clientX <= rect.left + border;
+      let onRight = clientX <= rect.right && clientX >= rect.right - border;
+      let onTop = clientY >= rect.top && clientY <= rect.top + border;
+      let onBottom = clientY <= rect.bottom && clientY >= rect.bottom - border;
+      event.target.style.cursor =
+        onLeft && onTop
+          ? "nw-resize"
+          : onLeft && onBottom
+          ? "sw-resize"
+          : onRight && onTop
+          ? "ne-resize"
+          : onRight && onBottom
+          ? "se-resize"
+          : onLeft || onRight
+          ? "ew-resize"
+          : onTop || onBottom
+          ? "ns-resize"
+          : "auto";
+    }
   };
 
-  useEffect(() => {
-    images.forEach((img) => {
-      const element = document.getElementById(img.id);
-      if (!element) return;
+  const onSelectionMouseDown = (event) => {
+    if (event.target.id.endsWith("selection")) {
+      const selection = event.target;
 
-      if (img.isSelected) {
-        element.addEventListener("mousemove", isCursorOnSelection);
-      } else {
-        element.removeEventListener("mousemove", isCursorOnSelection);
-        element.style.cursor = "auto";
+      const resizeImage = () => {};
+
+      switch (selection.style.cursor) {
+        case "nw-resize":
+          console.log("Está no canto superior esquerdo!");
+          break;
+        case "sw-resize":
+          console.log("Está no canto inferior esquerdo!");
+          break;
+        case "ne-resize":
+          console.log("Está no canto superior direito!");
+          break;
+        case "se-resize":
+          console.log("Está no canto inferior direito!");
+          break;
+        case "ew-resize":
+          console.log("Está no na esquerda ou na direita!");
+          break;
+        case "ns-resize":
+          console.log("Está no em cima ou embaixo!");
+          break;
+        default:
+          console.log(
+            "Cursor desconhecido ou não corresponde a nenhum dos casos."
+          );
       }
-    });
+    }
+  };
 
-    return () => {
-      images.forEach((img) => {
-        const element = document.getElementById(img.id);
-        if (element) {
-          element.removeEventListener("mousemove", isCursorOnSelection);
-        }
-      });
-    };
-  }, [images]);
-
+  // Remove selected image.
   useEffect(() => {
     const onKeyDown = (event) => {
       if (event.key === "Delete") {
-        setImages((prev) => prev.filter((img) => !img.isSelected));
+        setImages((prev) => prev.filter((image) => !image.isSelected));
+        setImagesIndex((prev) => prev.slice(0, -1));
       }
     };
 
     document.addEventListener("keydown", onKeyDown);
+
     return () => document.removeEventListener("keydown", onKeyDown);
   }, []);
 
   return (
     <div
-      id="canvas"
-      className="w-full h-full absolute z-50"
-      onClick={onCanvasClick}
-      onDragOver={onCanvasDragOver}
-      onDrop={onCanvasDrop}
+      onClick={(event) => onCanvasClick(event)}
+      onDragOver={(event) => event.preventDefault()}
+      onDrop={(event) => onCanvasDrop(event)}
+      className="w-screen h-screen absolute z-50"
     >
       {images.map((img) => (
         <div
+          onMouseMove={
+            img.isSelected ? (event) => onSelectionMouseMove(event) : null
+          }
+          onMouseDown={
+            img.isSelected ? (event) => onSelectionMouseDown(event) : null
+          }
+          className="absolute flex justify-center items-center"
           key={img.id}
-          id={img.id}
-          onMouseDown={(event) => selectAndDragMedia(event, img.id)}
+          id={`${img.id}-selection`}
           style={{
-            position: "absolute",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
             width: img.dimensions.width + 10,
             height: img.dimensions.height + 10,
-            left: img.position.x - img.dimensions.width / 2,
-            top: img.position.y - img.dimensions.height / 2,
+            top: img.position.y,
+            left: img.position.x,
             border: img.isSelected ? "2.5px solid cornflowerblue" : "none",
-            zIndex: img.isSelected ? 1000 : 10,
+            zIndex: img.zIndex - 1,
           }}
         >
           <img
+            onMouseDown={(event) => onImageMouseDown(event)}
+            className="select-none"
+            id={img.id}
             src={img.url}
+            alt={img.name}
             width={img.dimensions.width}
             height={img.dimensions.height}
-            draggable="false"
+            draggable={false}
             style={{
-              position: "relative",
-              pointerEvents: "none",
-              userSelect: "none",
-              zIndex: img.isSelected ? 100 : 0,
+              zIndex: img.zIndex,
             }}
           />
         </div>

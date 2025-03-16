@@ -154,10 +154,14 @@ function Canvas() {
           ? "ne-resize"
           : onRight && onBottom
           ? "se-resize"
-          : onLeft || onRight
-          ? "ew-resize"
-          : onTop || onBottom
-          ? "ns-resize"
+          : onLeft
+          ? "w-resize"
+          : onTop
+          ? "n-resize"
+          : onRight
+          ? "e-resize"
+          : onBottom
+          ? "s-resize"
           : "auto";
     }
   };
@@ -166,31 +170,44 @@ function Canvas() {
     if (event.target.id.endsWith("selection")) {
       const selection = event.target;
 
-      const resizeImage = () => {};
+      const resizeImage = (side) => {
+        const onMouseMove = () => {
+          console.log(side);
+        };
+
+        const onMouseUp = () => {
+          document.removeEventListener("mousemove", onMouseMove);
+        };
+
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
+      };
 
       switch (selection.style.cursor) {
         case "nw-resize":
-          console.log("Está no canto superior esquerdo!");
+          resizeImage("top-left");
           break;
         case "sw-resize":
-          console.log("Está no canto inferior esquerdo!");
+          resizeImage("bottom-left");
           break;
         case "ne-resize":
-          console.log("Está no canto superior direito!");
+          resizeImage("top-right");
           break;
         case "se-resize":
-          console.log("Está no canto inferior direito!");
+          resizeImage("bottom-right");
           break;
-        case "ew-resize":
-          console.log("Está no na esquerda ou na direita!");
+        case "w-resize":
+          resizeImage("left");
           break;
-        case "ns-resize":
-          console.log("Está no em cima ou embaixo!");
+        case "n-resize":
+          resizeImage("top");
           break;
-        default:
-          console.log(
-            "Cursor desconhecido ou não corresponde a nenhum dos casos."
-          );
+        case "e-resize":
+          resizeImage("right");
+          break;
+        case "s-resize":
+          resizeImage("bottom");
+          break;
       }
     }
   };

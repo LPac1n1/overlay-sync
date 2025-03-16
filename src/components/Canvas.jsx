@@ -137,78 +137,190 @@ function Canvas() {
   };
 
   const onSelectionMouseMove = (event) => {
-    if (event.target.id.endsWith("selection")) {
-      const rect = event.target.getBoundingClientRect();
-      const { clientX, clientY } = event;
-      const border = 5;
-      let onLeft = clientX >= rect.left && clientX <= rect.left + border;
-      let onRight = clientX <= rect.right && clientX >= rect.right - border;
-      let onTop = clientY >= rect.top && clientY <= rect.top + border;
-      let onBottom = clientY <= rect.bottom && clientY >= rect.bottom - border;
-      event.target.style.cursor =
-        onLeft && onTop
-          ? "nw-resize"
-          : onLeft && onBottom
-          ? "sw-resize"
-          : onRight && onTop
-          ? "ne-resize"
-          : onRight && onBottom
-          ? "se-resize"
-          : onLeft
-          ? "w-resize"
-          : onTop
-          ? "n-resize"
-          : onRight
-          ? "e-resize"
-          : onBottom
-          ? "s-resize"
-          : "auto";
-    }
+    if (!event.target.id.endsWith("selection")) return;
+
+    const rect = event.target.getBoundingClientRect();
+    const { clientX, clientY } = event;
+    const border = 5;
+    let onLeft = clientX >= rect.left && clientX <= rect.left + border;
+    let onRight = clientX <= rect.right && clientX >= rect.right - border;
+    let onTop = clientY >= rect.top && clientY <= rect.top + border;
+    let onBottom = clientY <= rect.bottom && clientY >= rect.bottom - border;
+    event.target.style.cursor =
+      onLeft && onTop
+        ? "nw-resize"
+        : onLeft && onBottom
+        ? "sw-resize"
+        : onRight && onTop
+        ? "ne-resize"
+        : onRight && onBottom
+        ? "se-resize"
+        : onLeft
+        ? "w-resize"
+        : onTop
+        ? "n-resize"
+        : onRight
+        ? "e-resize"
+        : onBottom
+        ? "s-resize"
+        : "auto";
   };
 
   const onSelectionMouseDown = (event) => {
-    if (event.target.id.endsWith("selection")) {
-      const selection = event.target;
+    if (!event.target.id.endsWith("selection")) return;
 
-      const resizeImage = (side) => {
-        const onMouseMove = () => {
-          console.log(side);
-        };
+    const selection = event.target;
+    const selectionImage = selection.children[0];
+    const selected = images.find((image) => image.id === selectionImage.id);
 
-        const onMouseUp = () => {
-          document.removeEventListener("mousemove", onMouseMove);
-        };
+    const aspectRatio = selected.dimensions.width / selected.dimensions.height;
 
-        document.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseup", onMouseUp);
+    const startClientX = event.clientX;
+    const startClientY = event.clientY;
+    const startImageWidth = selected.dimensions.width;
+    const startImageHeight = selected.dimensions.height;
+    const startImageX = selected.position.x;
+    const startImageY = selected.position.y;
+
+    const resizeImage = (side) => {
+      const onMouseMove = (event) => {
+        const { clientX, clientY } = event;
+
+        const differenceX = clientX - startClientX;
+        const differenceY = clientY - startClientY;
+
+        setImages((prev) =>
+          prev.map((image) => {
+            if (image.id === selected.id) {
+              let newWidth = null;
+              let newHeight = null;
+
+              let newX = null;
+              let newY = null;
+
+              switch (side) {
+                case "top-left":
+                  newWidth = Math.max(20, startImageWidth - differenceX);
+                  newHeight = newWidth / aspectRatio;
+
+                  newX = startImageX + startImageWidth - newWidth;
+                  newY = startImageY + startImageHeight - newHeight;
+                  break;
+                case "bottom-left":
+                  newWidth = Math.max(20, startImageWidth - differenceX);
+                  newHeight = newWidth / aspectRatio;
+
+                  newX = startImageX + startImageWidth - newWidth;
+                  newY = startImageY;
+                  break;
+                case "top-right":
+                  newWidth = Math.max(20, startImageWidth + differenceX);
+                  newHeight = newWidth / aspectRatio;
+
+                  newX = startImageX;
+                  newY = startImageY + startImageHeight - newHeight;
+                  break;
+
+                case "bottom-right":
+                  newWidth = Math.max(20, startImageWidth + differenceX);
+                  newHeight = newWidth / aspectRatio;
+
+                  newX = startImageX;
+                  newY = startImageY;
+                  break;
+
+                case "left":
+                  newWidth = Math.max(20, startImageWidth - differenceX);
+                  newHeight = newWidth / aspectRatio;
+
+                  newX =
+                    newWidth > 20
+                      ? startImageX + differenceX
+                      : startImageX + startImageWidth - 20;
+                  newY = startImageY + (startImageHeight - newHeight) / 2;
+                  break;
+
+                case "top":
+                  newHeight = Math.max(11, startImageHeight - differenceY);
+                  newWidth = newHeight * aspectRatio;
+
+                  newY =
+                    newHeight > 11
+                      ? startImageY + differenceY
+                      : startImageY + startImageHeight - 11;
+                  newX = startImageX + (startImageWidth - newWidth) / 2;
+                  break;
+
+                case "right":
+                  newWidth = Math.max(20, startImageWidth + differenceX);
+                  newHeight = newWidth / aspectRatio;
+
+                  newX = startImageX;
+                  newY = startImageY + (startImageHeight - newHeight) / 2;
+                  break;
+
+                case "bottom":
+                  newHeight = Math.max(11, startImageHeight + differenceY);
+                  newWidth = newHeight * aspectRatio;
+
+                  newY = startImageY;
+                  newX = startImageX + (startImageWidth - newWidth) / 2;
+                  break;
+              }
+
+              return {
+                ...image,
+                dimensions: {
+                  width: newWidth,
+                  height: newHeight,
+                },
+
+                position: {
+                  x: newX,
+                  y: newY,
+                },
+              };
+            }
+
+            return image;
+          })
+        );
       };
 
-      switch (selection.style.cursor) {
-        case "nw-resize":
-          resizeImage("top-left");
-          break;
-        case "sw-resize":
-          resizeImage("bottom-left");
-          break;
-        case "ne-resize":
-          resizeImage("top-right");
-          break;
-        case "se-resize":
-          resizeImage("bottom-right");
-          break;
-        case "w-resize":
-          resizeImage("left");
-          break;
-        case "n-resize":
-          resizeImage("top");
-          break;
-        case "e-resize":
-          resizeImage("right");
-          break;
-        case "s-resize":
-          resizeImage("bottom");
-          break;
-      }
+      const onMouseUp = () => {
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("mouseup", onMouseUp);
+      };
+
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onMouseUp);
+    };
+
+    switch (selection.style.cursor) {
+      case "nw-resize":
+        resizeImage("top-left");
+        break;
+      case "sw-resize":
+        resizeImage("bottom-left");
+        break;
+      case "ne-resize":
+        resizeImage("top-right");
+        break;
+      case "se-resize":
+        resizeImage("bottom-right");
+        break;
+      case "w-resize":
+        resizeImage("left");
+        break;
+      case "n-resize":
+        resizeImage("top");
+        break;
+      case "e-resize":
+        resizeImage("right");
+        break;
+      case "s-resize":
+        resizeImage("bottom");
+        break;
     }
   };
 

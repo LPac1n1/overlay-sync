@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 
+const resetCursor = () => {
+  const allDOMElements = document.querySelectorAll("*");
+  return allDOMElements.forEach((element) => {
+    element.style.cursor = "auto";
+  });
+};
+
 function Canvas() {
   const [images, setImages] = useState([]);
   const [imagesIndex, setImagesIndex] = useState([]);
 
-  const onCanvasClick = (event) => {
+  const onCanvasMouseDown = (event) => {
     if (
       event.target.id.startsWith("image") ||
       event.target.id.endsWith("selection")
@@ -20,10 +27,7 @@ function Canvas() {
 
     // If so, unselect it.
     if (hasImageSelected) {
-      const allDOMElements = document.querySelectorAll("*");
-      allDOMElements.forEach((element) => {
-        element.style.cursor = "auto";
-      });
+      resetCursor();
 
       return setImages((prev) =>
         prev.map((image) => ({ ...image, isSelected: false }))
@@ -129,7 +133,7 @@ function Canvas() {
     const onMouseUp = () => {
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseup", onMouseUp);
-      event.target.style.cursor = "auto";
+      resetCursor();
     };
 
     document.addEventListener("mousemove", onMouseMove);
@@ -340,7 +344,7 @@ function Canvas() {
 
   return (
     <div
-      onClick={(event) => onCanvasClick(event)}
+      onMouseDown={(event) => onCanvasMouseDown(event)}
       onDragOver={(event) => event.preventDefault()}
       onDrop={(event) => onCanvasDrop(event)}
       className="w-screen h-screen absolute z-50"

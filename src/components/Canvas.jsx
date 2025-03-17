@@ -186,6 +186,86 @@ function Canvas() {
     const startImageX = selected.position.x;
     const startImageY = selected.position.y;
 
+    const calculateResize = (side, differenceX, differenceY) => {
+      let newWidth = null;
+      let newHeight = null;
+
+      let newX = null;
+      let newY = null;
+
+      switch (side) {
+        case "top-left":
+          newWidth = Math.max(20, startImageWidth - differenceX);
+          newHeight = newWidth / aspectRatio;
+
+          newX = startImageX + startImageWidth - newWidth;
+          newY = startImageY + startImageHeight - newHeight;
+          break;
+        case "bottom-left":
+          newWidth = Math.max(20, startImageWidth - differenceX);
+          newHeight = newWidth / aspectRatio;
+
+          newX = startImageX + startImageWidth - newWidth;
+          newY = startImageY;
+          break;
+        case "top-right":
+          newWidth = Math.max(20, startImageWidth + differenceX);
+          newHeight = newWidth / aspectRatio;
+
+          newX = startImageX;
+          newY = startImageY + startImageHeight - newHeight;
+          break;
+
+        case "bottom-right":
+          newWidth = Math.max(20, startImageWidth + differenceX);
+          newHeight = newWidth / aspectRatio;
+
+          newX = startImageX;
+          newY = startImageY;
+          break;
+
+        case "left":
+          newWidth = Math.max(20, startImageWidth - differenceX);
+          newHeight = newWidth / aspectRatio;
+
+          newX =
+            newWidth > 20
+              ? startImageX + differenceX
+              : startImageX + startImageWidth - 20;
+          newY = startImageY + (startImageHeight - newHeight) / 2;
+          break;
+
+        case "top":
+          newHeight = Math.max(11, startImageHeight - differenceY);
+          newWidth = newHeight * aspectRatio;
+
+          newY =
+            newHeight > 11
+              ? startImageY + differenceY
+              : startImageY + startImageHeight - 11;
+          newX = startImageX + (startImageWidth - newWidth) / 2;
+          break;
+
+        case "right":
+          newWidth = Math.max(20, startImageWidth + differenceX);
+          newHeight = newWidth / aspectRatio;
+
+          newX = startImageX;
+          newY = startImageY + (startImageHeight - newHeight) / 2;
+          break;
+
+        case "bottom":
+          newHeight = Math.max(11, startImageHeight + differenceY);
+          newWidth = newHeight * aspectRatio;
+
+          newY = startImageY;
+          newX = startImageX + (startImageWidth - newWidth) / 2;
+          break;
+      }
+
+      return { newHeight, newWidth, newX, newY };
+    };
+
     const resizeImage = (side) => {
       const onMouseMove = (event) => {
         const { clientX, clientY } = event;
@@ -193,85 +273,15 @@ function Canvas() {
         const differenceX = clientX - startClientX;
         const differenceY = clientY - startClientY;
 
+        const { newWidth, newHeight, newX, newY } = calculateResize(
+          side,
+          differenceX,
+          differenceY
+        );
+
         setImages((prev) =>
           prev.map((image) => {
             if (image.id === selected.id) {
-              let newWidth = null;
-              let newHeight = null;
-
-              let newX = null;
-              let newY = null;
-
-              switch (side) {
-                case "top-left":
-                  newWidth = Math.max(20, startImageWidth - differenceX);
-                  newHeight = newWidth / aspectRatio;
-
-                  newX = startImageX + startImageWidth - newWidth;
-                  newY = startImageY + startImageHeight - newHeight;
-                  break;
-                case "bottom-left":
-                  newWidth = Math.max(20, startImageWidth - differenceX);
-                  newHeight = newWidth / aspectRatio;
-
-                  newX = startImageX + startImageWidth - newWidth;
-                  newY = startImageY;
-                  break;
-                case "top-right":
-                  newWidth = Math.max(20, startImageWidth + differenceX);
-                  newHeight = newWidth / aspectRatio;
-
-                  newX = startImageX;
-                  newY = startImageY + startImageHeight - newHeight;
-                  break;
-
-                case "bottom-right":
-                  newWidth = Math.max(20, startImageWidth + differenceX);
-                  newHeight = newWidth / aspectRatio;
-
-                  newX = startImageX;
-                  newY = startImageY;
-                  break;
-
-                case "left":
-                  newWidth = Math.max(20, startImageWidth - differenceX);
-                  newHeight = newWidth / aspectRatio;
-
-                  newX =
-                    newWidth > 20
-                      ? startImageX + differenceX
-                      : startImageX + startImageWidth - 20;
-                  newY = startImageY + (startImageHeight - newHeight) / 2;
-                  break;
-
-                case "top":
-                  newHeight = Math.max(11, startImageHeight - differenceY);
-                  newWidth = newHeight * aspectRatio;
-
-                  newY =
-                    newHeight > 11
-                      ? startImageY + differenceY
-                      : startImageY + startImageHeight - 11;
-                  newX = startImageX + (startImageWidth - newWidth) / 2;
-                  break;
-
-                case "right":
-                  newWidth = Math.max(20, startImageWidth + differenceX);
-                  newHeight = newWidth / aspectRatio;
-
-                  newX = startImageX;
-                  newY = startImageY + (startImageHeight - newHeight) / 2;
-                  break;
-
-                case "bottom":
-                  newHeight = Math.max(11, startImageHeight + differenceY);
-                  newWidth = newHeight * aspectRatio;
-
-                  newY = startImageY;
-                  newX = startImageX + (startImageWidth - newWidth) / 2;
-                  break;
-              }
-
               return {
                 ...image,
                 dimensions: {
@@ -300,32 +310,19 @@ function Canvas() {
       document.addEventListener("mouseup", onMouseUp);
     };
 
-    switch (selection.style.cursor) {
-      case "nw-resize":
-        resizeImage("top-left");
-        break;
-      case "sw-resize":
-        resizeImage("bottom-left");
-        break;
-      case "ne-resize":
-        resizeImage("top-right");
-        break;
-      case "se-resize":
-        resizeImage("bottom-right");
-        break;
-      case "w-resize":
-        resizeImage("left");
-        break;
-      case "n-resize":
-        resizeImage("top");
-        break;
-      case "e-resize":
-        resizeImage("right");
-        break;
-      case "s-resize":
-        resizeImage("bottom");
-        break;
-    }
+    const cursorToSide = {
+      "nw-resize": "top-left",
+      "sw-resize": "bottom-left",
+      "ne-resize": "top-right",
+      "se-resize": "bottom-right",
+      "w-resize": "left",
+      "n-resize": "top",
+      "e-resize": "right",
+      "s-resize": "bottom",
+    };
+
+    const side = cursorToSide[selection.style.cursor];
+    if (side) resizeImage(side);
   };
 
   // Remove selected image.

@@ -41,6 +41,16 @@ function Canvas() {
   const onCanvasDrop = (event) => {
     event.preventDefault();
 
+    const { clientX, clientY } = event;
+    event.target.style.pointerEvents = "none";
+    const elementoAtras = document.elementFromPoint(clientX, clientY);
+    event.target.style.pointerEvents = "auto";
+
+    console.log(elementoAtras.id);
+
+    if (elementoAtras.id !== "drop-area")
+      return alert("Solte na área cinza escuro!");
+
     const files = Array.from(event.dataTransfer.files);
     files.forEach((file) => {
       if (!file.type.startsWith("image")) {
@@ -71,7 +81,7 @@ function Canvas() {
                   y: event.clientY - height / 2,
                 },
                 isSelected: false,
-                zIndex: prev.length + 1,
+                zIndex: 50 + prev.length + 1,
               },
             ];
           });

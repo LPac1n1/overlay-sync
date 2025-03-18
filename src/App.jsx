@@ -1,13 +1,12 @@
 import Canvas from "./components/Canvas.jsx";
+import DropArea from "./components/DropArea.jsx";
 import Screen from "./components/Screen.jsx";
 
 function App() {
   return (
-    <div
-      id="container"
-      className=" w-screen h-screen bg-zinc-200 flex justify-center items-center relative"
-    >
+    <div className="w-screen h-screen relative flex justify-between items-center bg-zinc-200">
       <Canvas />
+      <DropArea />
       <Screen />
     </div>
   );

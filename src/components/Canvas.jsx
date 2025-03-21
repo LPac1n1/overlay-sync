@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createRef } from "react";
 import { v4 as uuid } from "uuid";
 
 const resetCursor = () => {
@@ -43,12 +43,10 @@ function Canvas() {
 
     const { clientX, clientY } = event;
     event.target.style.pointerEvents = "none";
-    const elementoAtras = document.elementFromPoint(clientX, clientY);
+    const behindElement = document.elementFromPoint(clientX, clientY);
     event.target.style.pointerEvents = "auto";
 
-    console.log(elementoAtras.id);
-
-    if (elementoAtras.id !== "drop-area")
+    if (behindElement.id !== "drop-area")
       return alert("Solte na área cinza escuro!");
 
     const files = Array.from(event.dataTransfer.files);
@@ -61,6 +59,8 @@ function Canvas() {
       reader.onload = () => {
         const image = new Image();
         image.onload = () => {
+          const imageDOM = createRef();
+
           setImagesIndex((prev) => {
             return [...prev, prev.length + 1];
           });
@@ -75,13 +75,14 @@ function Canvas() {
                 id: `image-${uuid()}`,
                 url: reader.result,
                 name: file.name,
+                html: imageDOM,
                 dimensions: { width, height },
                 position: {
                   x: event.clientX - width / 2,
                   y: event.clientY - height / 2,
                 },
                 isSelected: false,
-                zIndex: 50 + prev.length + 1,
+                zIndex: prev.length + 1,
               },
             ];
           });
@@ -101,6 +102,8 @@ function Canvas() {
       : (hasImageSelected = false);
 
     if (!hasImageSelected) {
+      selected.html.current;
+
       setImages((prev) =>
         prev.map((image) =>
           image.id === selected.id
@@ -114,6 +117,10 @@ function Canvas() {
       );
     }
 
+    onImageMouseMove(event, selected);
+  };
+
+  const onImageMouseMove = (event, selected) => {
     const startX = event.clientX - selected.position.x;
     const startY = event.clientY - selected.position.y;
 
@@ -358,15 +365,15 @@ function Canvas() {
     >
       {images.map((img) => (
         <div
-          onMouseMove={
-            img.isSelected ? (event) => onSelectionMouseMove(event) : null
-          }
           onMouseDown={
             img.isSelected ? (event) => onSelectionMouseDown(event) : null
           }
-          className="absolute flex justify-center items-center"
+          onMouseMove={
+            img.isSelected ? (event) => onSelectionMouseMove(event) : null
+          }
           key={img.id}
           id={`${img.id}-selection`}
+          className="absolute flex justify-center items-center"
           style={{
             width: img.dimensions.width + 10,
             height: img.dimensions.height + 10,
@@ -378,13 +385,14 @@ function Canvas() {
         >
           <img
             onMouseDown={(event) => onImageMouseDown(event)}
-            className="select-none"
             id={img.id}
+            ref={img.html}
             src={img.url}
             alt={img.name}
             width={img.dimensions.width}
             height={img.dimensions.height}
             draggable={false}
+            className="select-none"
             style={{
               zIndex: img.zIndex,
             }}

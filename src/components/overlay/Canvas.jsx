@@ -12,32 +12,6 @@ function Canvas() {
   const [images, setImages] = useState([]);
   const [imagesIndex, setImagesIndex] = useState([]);
 
-  const onCanvasMouseDown = (event) => {
-    if (
-      event.target.id.startsWith("image") ||
-      event.target.id.endsWith("selection")
-    )
-      return;
-
-    // Check if there is any image selected.
-    let hasImageSelected = null;
-    images.map((image) => image.isSelected).includes(true)
-      ? (hasImageSelected = true)
-      : (hasImageSelected = false);
-
-    // If so, unselect it.
-    if (hasImageSelected) {
-      resetCursor();
-
-      return setImages((prev) =>
-        prev.map((image) => ({ ...image, isSelected: false }))
-      );
-    }
-
-    // If you don't have it, nothing happens.
-    return;
-  };
-
   const onCanvasDrop = (event) => {
     event.preventDefault();
 
@@ -91,6 +65,32 @@ function Canvas() {
       };
       reader.readAsDataURL(file);
     });
+  };
+
+  const onCanvasMouseDown = (event) => {
+    if (
+      event.target.id.startsWith("image") ||
+      event.target.id.endsWith("selection")
+    )
+      return;
+
+    // Check if there is any image selected.
+    let hasImageSelected = null;
+    images.map((image) => image.isSelected).includes(true)
+      ? (hasImageSelected = true)
+      : (hasImageSelected = false);
+
+    // If so, unselect it.
+    if (hasImageSelected) {
+      resetCursor();
+
+      return setImages((prev) =>
+        prev.map((image) => ({ ...image, isSelected: false }))
+      );
+    }
+
+    // If you don't have it, nothing happens.
+    return;
   };
 
   const onImageMouseDown = (event) => {
@@ -359,7 +359,7 @@ function Canvas() {
   return (
     <div
       onMouseDown={(event) => onCanvasMouseDown(event)}
-      onDragOver={(event) => event.preventDefault()}
+      onDragOver={(event) => event.preventDefault(event)}
       onDrop={(event) => onCanvasDrop(event)}
       className="w-screen h-screen absolute z-50"
     >

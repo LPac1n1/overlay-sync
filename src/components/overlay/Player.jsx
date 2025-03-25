@@ -1,47 +1,55 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
+
+import { getStreamData } from "../../api/Twitch";
+import { ImagesContext } from "../../context/Images";
 
 function Player() {
-  const playerRef = useRef(null);
+  const iframeRef = useRef(null);
 
-  const CLIENT_ID = import.meta.env.VITE_TWITCH_CLIENT_ID;
-  const ACCESS_TOKEN = import.meta.env.VITE_TWICH_ACCESS_TOKEN;
-
-  const streamerUser = "omeiaum";
-
+  const streamer = "omeiaum";
   const [streamData, setStreamData] = useState(null);
 
+  // Get stream data
   useEffect(() => {
-    const getStreamData = async () => {
-      try {
-        const response = await fetch(
-          `https://api.twitch.tv/helix/streams?user_login=${streamerUser}`,
-          {
-            method: "GET",
-            headers: {
-              "Client-ID": CLIENT_ID,
-              Authorization: `Bearer ${ACCESS_TOKEN}`,
-            },
-          }
-        );
-
-        const streamData = await response.json();
-
-        if (streamData.data.length === 0) return;
-
-        setStreamData(streamData.data[0]);
-      } catch (error) {
-        console.error(`Erro ao buscar stream: ${error.message}`);
-      }
+    const fetchStreamData = async () => {
+      const streamData = await getStreamData(streamer);
+      setStreamData(streamData);
     };
 
-    getStreamData();
-  }, [CLIENT_ID, ACCESS_TOKEN]);
+    fetchStreamData();
+  }, []);
+
+  // Image in front player area handler
+  const { images } = useContext(ImagesContext);
+
+  useEffect(() => {
+    const imagesDOM = images.map((image) => image.html.current);
+    imagesDOM.forEach((imageDOM) => {
+      const playerRect = iframeRef.current.getBoundingClientRect();
+      const imageRect = imageDOM.getBoundingClientRect();
+
+      const isOnPlayerArea = (elementRect) => {
+        if (
+          elementRect.bottom >= playerRect.top &&
+          elementRect.right >= playerRect.left &&
+          elementRect.top <= playerRect.bottom &&
+          elementRect.left <= playerRect.right
+        )
+          return true;
+        return false;
+      };
+
+      if (!isOnPlayerArea(imageRect)) return;
+
+      console.log("Está em cima!");
+    });
+  }, [images]);
 
   return (
-    <div className="w-full max-w-screen-width h-full max-h-screen-height flex justify-center items-center mx-auto bg-zinc-900">
+    <div className="w-full h-full max-w-[960px] max-h-[540px] flex justify-center items-center mx-auto bg-zinc-900">
       {streamData ? (
         <iframe
-          ref={playerRef}
+          ref={iframeRef}
           src={`https://player.twitch.tv/?channel=${streamData.user_login}&parent=localhost`}
           className="w-full h-full"
         ></iframe>

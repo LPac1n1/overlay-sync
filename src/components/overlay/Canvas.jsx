@@ -1,5 +1,7 @@
-import { useState, useEffect, createRef } from "react";
+import { useState, useEffect, createRef, useContext } from "react";
 import { v4 as uuid } from "uuid";
+
+import { ImagesContext } from "../../context/Images";
 
 const resetCursor = () => {
   const allDOMElements = document.querySelectorAll("*");
@@ -9,7 +11,7 @@ const resetCursor = () => {
 };
 
 function Canvas() {
-  const [images, setImages] = useState([]);
+  const { images, setImages } = useContext(ImagesContext);
   const [imagesIndex, setImagesIndex] = useState([]);
 
   const onCanvasDrop = (event) => {
@@ -354,14 +356,15 @@ function Canvas() {
     document.addEventListener("keydown", onKeyDown);
 
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [setImages]);
 
   return (
     <div
       onMouseDown={(event) => onCanvasMouseDown(event)}
       onDragOver={(event) => event.preventDefault(event)}
       onDrop={(event) => onCanvasDrop(event)}
-      className="w-screen h-screen absolute z-50"
+      id="canvas"
+      className="w-screen h-screen absolute z-40"
     >
       {images.map((img) => (
         <div

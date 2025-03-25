@@ -19,31 +19,53 @@ function Player() {
     fetchStreamData();
   }, []);
 
-  // Image in front player area handler
+  // Image over player area handler
   const { images } = useContext(ImagesContext);
+  const [imagesOverPlayer, setImagesOverPlayer] = useState(new Set());
 
   useEffect(() => {
+    if (!iframeRef.current) return;
+
+    const isOverPlayer = (imageRect, playerRect) => {
+      return (
+        imageRect.bottom >= playerRect.top &&
+        imageRect.right >= playerRect.left &&
+        imageRect.top <= playerRect.bottom &&
+        imageRect.left <= playerRect.right
+      );
+    };
+
+    const playerRect = iframeRef.current.getBoundingClientRect();
     const imagesDOM = images.map((image) => image.html.current);
+
+    setImagesOverPlayer((prev) => {
+      const newSet = new Set(prev);
+      for (const image of prev) {
+        if (!imagesDOM.includes(image)) {
+          newSet.delete(image);
+        }
+      }
+      return newSet;
+    });
+
     imagesDOM.forEach((imageDOM) => {
-      const playerRect = iframeRef.current.getBoundingClientRect();
       const imageRect = imageDOM.getBoundingClientRect();
 
-      const isOnPlayerArea = (elementRect) => {
-        if (
-          elementRect.bottom >= playerRect.top &&
-          elementRect.right >= playerRect.left &&
-          elementRect.top <= playerRect.bottom &&
-          elementRect.left <= playerRect.right
-        )
-          return true;
-        return false;
-      };
-
-      if (!isOnPlayerArea(imageRect)) return;
-
-      console.log("Está em cima!");
+      setImagesOverPlayer((prev) => {
+        const newSet = new Set(prev);
+        if (isOverPlayer(imageRect, playerRect)) {
+          newSet.add(imageDOM);
+        } else {
+          newSet.delete(imageDOM);
+        }
+        return newSet;
+      });
     });
   }, [images]);
+
+  useEffect(() => {
+    console.log(imagesOverPlayer);
+  }, [imagesOverPlayer]);
 
   return (
     <div className="w-full h-full max-w-[960px] max-h-[540px] flex justify-center items-center mx-auto bg-zinc-900">

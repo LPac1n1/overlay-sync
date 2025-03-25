@@ -3,6 +3,8 @@ import { useRef, useState, useEffect, useContext } from "react";
 import { getStreamData } from "../../api/Twitch";
 import { ImagesContext } from "../../context/Images";
 
+const ws = new WebSocket("ws://localhost:8080");
+
 function Player() {
   const iframeRef = useRef(null);
 
@@ -64,7 +66,20 @@ function Player() {
   }, [images]);
 
   useEffect(() => {
-    console.log(imagesOverPlayer);
+    const imagesData = Array.from(imagesOverPlayer).map((image) => {
+      const rect = image.getBoundingClientRect();
+      return {
+        src: image.src,
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height,
+      };
+    });
+
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: "user", data: imagesData }));
+    }
   }, [imagesOverPlayer]);
 
   return (

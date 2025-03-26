@@ -66,6 +66,17 @@ function Player() {
   }, [images]);
 
   useEffect(() => {
+    const getPlayerData = () => {
+      const playerRect = iframeRef.current.getBoundingClientRect();
+      return {
+        x: playerRect.x,
+        y: playerRect.y,
+        width: playerRect.width,
+        height: playerRect.height,
+      };
+    };
+
+    const playerData = iframeRef.current ? getPlayerData() : null;
     const imagesData = Array.from(imagesOverPlayer).map((image) => {
       const rect = image.getBoundingClientRect();
       return {
@@ -80,7 +91,9 @@ function Player() {
     });
 
     if (ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ type: "user", data: imagesData }));
+      ws.send(
+        JSON.stringify({ type: "user", data: { imagesData, playerData } })
+      );
     }
   }, [imagesOverPlayer]);
 

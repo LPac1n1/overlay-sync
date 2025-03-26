@@ -6,6 +6,27 @@ function Overlay() {
   const overlayRef = useRef(null);
   const [images, setImages] = useState([]);
 
+  const transformScale = (playerRect, images) => {
+    const scaleX = window.innerWidth / playerRect.width;
+    const scaleY = window.innerHeight / playerRect.height;
+
+    const enlargedImages = [];
+
+    images.forEach((image) => {
+      enlargedImages.push({
+        id: image.id,
+        src: image.src,
+        x: (image.x - playerRect.x) * scaleX,
+        y: (image.y - playerRect.y) * scaleY,
+        width: image.width * scaleX,
+        height: image.height * scaleY,
+        zIndex: image.zIndex,
+      });
+    });
+
+    return enlargedImages;
+  };
+
   useEffect(() => {
     ws.onopen = () => {
       ws.send(JSON.stringify({ type: "overlay" }));
@@ -13,7 +34,7 @@ function Overlay() {
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      setImages(data.data);
+      setImages(transformScale(data.data.playerData, data.data.imagesData));
     };
   }, []);
 

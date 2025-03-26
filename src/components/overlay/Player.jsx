@@ -69,11 +69,13 @@ function Player() {
     const imagesData = Array.from(imagesOverPlayer).map((image) => {
       const rect = image.getBoundingClientRect();
       return {
+        id: image.id,
         src: image.src,
         x: rect.x,
         y: rect.y,
         width: rect.width,
         height: rect.height,
+        zIndex: image.style.zIndex,
       };
     });
 

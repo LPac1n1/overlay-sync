@@ -2,13 +2,16 @@ import { TwitchIcon } from "lucide-react";
 
 function TwitchOverlayWidget() {
   return (
-    <div className="max-w-full min-h-72 md:max-w-72 bg-zinc-900 rounded-2xl flex flex-col justify-center items-center overflow-hidden">
-      <div className="relative w-full h-3/4 bg-zinc-950 flex justify-center items-center rounded-t-2xl z-10 overflow-hidden">
-        <img src="" className="absolute opacity-30" />
+    <div className="max-w-full min-h-72 md:max-w-80 bg-zinc-900 border-2 border-zinc-700/75 rounded-2xl flex flex-col justify-center items-center overflow-hidden">
+      <div className="relative w-full h-3/4 bg-zinc-950 flex justify-center items-center z-10 overflow-hidden">
+        <div className="w-full h-full bg-gradient-to-t from-zinc-900 to-transparent z-10"></div>
+        <img src="" className="absolute w-full opacity-50" />
       </div>
 
       <div className="relative w-full h-full flex flex-col justify-evenly items-center">
-        <div className="absolute -top-24">
+        <div className="absolute w-full h-full bg-gradient-to-b from-zinc-900 to-transparent to-90% z-10"></div>
+
+        <div className="absolute -top-10">
           <TwitchIcon className="w-72 h-72 text-zinc-950/25" />
         </div>
 

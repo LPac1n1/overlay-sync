@@ -45,7 +45,7 @@ function Overlay() {
   return (
     <div
       ref={overlayRef}
-      className="relative w-screen h-screen pointer-events-none"
+      className="relative w-screen h-screen pointer-events-none overflow-hidden"
     >
       {images.map((img) => (
         <img

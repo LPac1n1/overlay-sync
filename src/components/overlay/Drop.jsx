@@ -38,7 +38,7 @@ function Drop() {
   }, [showDropAlert, hideDropAlert]);
 
   return (
-    <div id="drop-area" className="w-1/3 h-full p-6 bg-zinc-900 relative">
+    <div id="drop-area" className="w-1/4 h-full p-6 bg-zinc-900 relative">
       <div
         ref={dropAlertRef}
         className={`

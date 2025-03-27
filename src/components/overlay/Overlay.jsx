@@ -10,10 +10,10 @@ function Overlay() {
     const scaleX = window.innerWidth / playerRect.width;
     const scaleY = window.innerHeight / playerRect.height;
 
-    const enlargedImages = [];
+    const transformedImages = [];
 
     images.forEach((image) => {
-      enlargedImages.push({
+      transformedImages.push({
         id: image.id,
         src: image.src,
         x: (image.x - playerRect.x) * scaleX,
@@ -24,7 +24,7 @@ function Overlay() {
       });
     });
 
-    return enlargedImages;
+    return transformedImages;
   };
 
   useEffect(() => {

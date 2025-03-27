@@ -165,10 +165,12 @@ function Canvas() {
     const rect = event.target.getBoundingClientRect();
     const { clientX, clientY } = event;
     const border = 5;
+
     let onLeft = clientX >= rect.left && clientX <= rect.left + border;
     let onRight = clientX <= rect.right && clientX >= rect.right - border;
     let onTop = clientY >= rect.top && clientY <= rect.top + border;
     let onBottom = clientY <= rect.bottom && clientY >= rect.bottom - border;
+
     event.target.style.cursor =
       onLeft && onTop
         ? "nw-resize"

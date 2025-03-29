@@ -1,13 +1,13 @@
 import { ImagesProvider } from "../../context/Images.jsx";
 
-import Link from "../canvas/Link.jsx";
-import Canvas from "..//canvas/Canvas.jsx";
-import Drop from "../canvas/Drop.jsx";
-import Player from "../canvas/Player.jsx";
+import Link from "./Link.jsx";
+import Canvas from "./Canvas.jsx";
+import Drop from "./Drop.jsx";
+import Player from "./Player.jsx";
 
 function Workspace() {
   return (
-    <div className="w-screen h-screen relative flex items-center bg-zinc-800">
+    <div className="w-screen h-screen relative flex items-center bg-zinc-800 overflow-hidden">
       <ImagesProvider>
         <Link />
         <Canvas />

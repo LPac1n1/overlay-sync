@@ -1,6 +1,6 @@
-import { TwitchIcon } from "lucide-react";
+import { YoutubeIcon } from "lucide-react";
 
-function TwitchOverlayWidget() {
+function YoutubeOverlayWidget() {
   return (
     <div className="max-w-full min-h-72 md:max-w-80 bg-zinc-900 border-2 border-zinc-700/75 rounded-2xl flex flex-col justify-center items-center overflow-hidden">
       <div className="relative w-full h-3/4 bg-zinc-950 flex justify-center items-center z-10 overflow-hidden">
@@ -12,7 +12,7 @@ function TwitchOverlayWidget() {
         <div className="absolute w-full h-full bg-gradient-to-b from-zinc-900 to-transparent to-90% z-10"></div>
 
         <div className="absolute -top-10">
-          <TwitchIcon className="w-72 h-72 text-purple-800/10" />
+          <YoutubeIcon className="w-72 h-72 text-red-800/10" />
         </div>
 
         <h3 className="text-3xl text-zinc-300 z-10">Canal</h3>
@@ -24,4 +24,4 @@ function TwitchOverlayWidget() {
   );
 }
 
-export default TwitchOverlayWidget;
+export default YoutubeOverlayWidget;

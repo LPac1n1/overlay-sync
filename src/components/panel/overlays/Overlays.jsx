@@ -1,6 +1,5 @@
-import AddOverlayWidget from "./AddOverlayWidget";
-import TwitchOverlayWidget from "./TwitchOverlayWidget";
-import YoutubeOverlayWidget from "./YoutubeOverlayWidget";
+import AddOverlay from "./AddOverlay";
+import CreatedOverlays from "./CreatedOverlays";
 
 function PanelOverlays() {
   return (
@@ -13,10 +12,9 @@ function PanelOverlays() {
         </p>
       </div>
 
-      <div className="h-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-flow-row gap-8">
-        <AddOverlayWidget />
-        <TwitchOverlayWidget />
-        <YoutubeOverlayWidget />
+      <div className="flex flex-col gap-8">
+        <AddOverlay />
+        <CreatedOverlays />
       </div>
     </div>
   );

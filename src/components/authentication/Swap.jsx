@@ -1,8 +1,6 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 
 function Swap() {
-  const [authenticationType, setAuthenticationType] = useState("login");
-
   const swap = useRef(null);
 
   const swapToRegisterButtonRef = useRef(null);
@@ -60,14 +58,12 @@ function Swap() {
   const handleSwap = (event) => {
     switch (event.target) {
       case swapToRegisterButtonRef.current:
-        setAuthenticationType("register");
-        textTransition(authenticationType);
+        textTransition("login");
         moveSwap("left");
         break;
 
       case swapToLoginButtonRef.current:
-        setAuthenticationType("login");
-        textTransition(authenticationType);
+        textTransition("register");
         moveSwap("right");
         break;
     }

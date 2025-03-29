@@ -33,13 +33,13 @@ function Register() {
                 type="text"
                 placeholder="Nome"
                 autoComplete="off"
-                className="w-full h-12 bg-zinc-700 text-zinc-400 outline-none border-2 border-zinc-700 focus:border-zinc-600 rounded-lg px-4 py-2"
+                className="w-full h-12 bg-zinc-700 text-zinc-400 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
               />
               <input
                 type="email"
                 placeholder="Email"
                 autoComplete="off"
-                className="w-full h-12 bg-zinc-700 text-zinc-400 outline-none border-2 border-zinc-700 focus:border-zinc-600 rounded-lg px-4 py-2"
+                className="w-full h-12 bg-zinc-700 text-zinc-400 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
               />
               <div className="relative">
                 <input
@@ -47,7 +47,7 @@ function Register() {
                   type="password"
                   placeholder="Senha"
                   autoComplete="off"
-                  className="w-full h-12 bg-zinc-700 text-zinc-400 outline-none border-2 border-zinc-700 focus:border-zinc-600 rounded-lg px-4 py-2"
+                  className="w-full h-12 bg-zinc-700 text-zinc-400 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
                 />
                 <div
                   ref={eyeClosedRef}

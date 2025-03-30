@@ -1,8 +1,11 @@
 import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { LinkIcon } from "lucide-react";
+import { ArrowLeftIcon } from "lucide-react";
 
-function Link() {
+function Leave() {
+  const navigate = useNavigate();
+
   const buttonRef = useRef(null);
 
   useEffect(() => {
@@ -18,14 +21,15 @@ function Link() {
 
   return (
     <button
+      onClick={() => navigate("/panel")}
       onDragOver={(event) => event.preventDefault()}
       onDrop={(event) => event.preventDefault()}
       ref={buttonRef}
-      className="absolute right-16 -translate-x-3 top-4 bg-zinc-900 rounded-full p-3 z-50 transition-all hover:bg-zinc-700 hover:!cursor-pointer"
+      className="absolute right-4 top-4 bg-zinc-900 rounded-full p-3 z-50 transition-all hover:bg-zinc-700 hover:!cursor-pointer"
     >
-      <LinkIcon className="text-zinc-300 z-40 pointer-events-none" />
+      <ArrowLeftIcon className="text-zinc-300 z-40 pointer-events-none" />
     </button>
   );
 }
 
-export default Link;
+export default Leave;

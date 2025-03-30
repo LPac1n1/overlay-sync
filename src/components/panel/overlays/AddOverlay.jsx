@@ -61,7 +61,7 @@ function AddOverlay() {
       addOverlayFormRef.current.classList.toggle("hidden");
       setTimeout(() => {
         addOverlayFormRef.current.classList.replace("opacity-0", "opacity-100");
-      }, 75);
+      }, 100);
       return;
     }
 
@@ -69,7 +69,7 @@ function AddOverlay() {
       addOverlayFormRef.current.classList.replace("opacity-100", "opacity-0");
       setTimeout(() => {
         addOverlayFormRef.current.classList.toggle("hidden");
-      }, 275);
+      }, 200);
     }
   };
 
@@ -95,7 +95,7 @@ function AddOverlay() {
             <div>
               <PlusIcon
                 ref={plusIconRef}
-                className="w-10 h-10 text-emerald-700 duration-75 ease-in-out"
+                className="w-10 h-10 text-emerald-700 duration-300 ease-in-out"
               />
             </div>
           </div>
@@ -104,7 +104,7 @@ function AddOverlay() {
         <div className="col-span-1 md:col-span-2 lg:col-span-2">
           <form
             ref={addOverlayFormRef}
-            className="hidden w-full h-full duration-300 ease-linear opacity-0"
+            className="hidden w-full h-full duration-100 ease-linear opacity-0"
           >
             <div className="h-full flex flex-col items-center gap-8">
               <div className="w-full flex flex-col gap-4">

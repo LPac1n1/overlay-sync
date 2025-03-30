@@ -98,16 +98,18 @@ function Player() {
   }, [imagesOverPlayer]);
 
   return (
-    <div className="w-full h-full max-w-[960px] max-h-[540px] flex justify-center items-center mx-auto bg-zinc-900">
-      {streamData ? (
-        <iframe
-          ref={iframeRef}
-          src={`https://player.twitch.tv/?channel=${streamData.user_login}&parent=localhost`}
-          className="w-full h-full"
-        ></iframe>
-      ) : (
-        <div className="text-zinc-400 text-lg">O streamer está offline!</div>
-      )}
+    <div className="w-full h-full flex justify-center items-center pointer-events-none">
+      <div className="w-full max-w-[960px] aspect-[16/9] flex justify-center items-center ml-20 mr-8 bg-zinc-900">
+        {streamData ? (
+          <iframe
+            ref={iframeRef}
+            src={`https://player.twitch.tv/?channel=${streamData.user_login}&parent=localhost`}
+            className="w-full h-full"
+          ></iframe>
+        ) : (
+          <div className="text-zinc-400 text-lg">O streamer está offline!</div>
+        )}
+      </div>
     </div>
   );
 }

@@ -22,8 +22,7 @@ function Canvas() {
     const behindElement = document.elementFromPoint(clientX, clientY);
     event.target.style.pointerEvents = "auto";
 
-    if (behindElement.id !== "drop-area")
-      return alert("Solte na área cinza escuro!");
+    if (behindElement.id !== "drop-area") return;
 
     const files = Array.from(event.dataTransfer.files);
     files.forEach((file) => {

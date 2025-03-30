@@ -20,11 +20,10 @@ function Link() {
     <button
       onDragOver={(event) => event.preventDefault()}
       onDrop={(event) => event.preventDefault()}
-      onMouseMove={(event) => (event.target.style.cursor = "pointer")}
       ref={buttonRef}
-      className="absolute right-4 top-4 text-white bg-zinc-900 hover:bg-zinc-950 rounded-full p-3 transition-all z-50"
+      className="absolute right-4 top-4 bg-zinc-900 rounded-full p-3 z-50 transition-all hover:bg-zinc-700 hover:!cursor-pointer"
     >
-      <LinkIcon className="z-40" />
+      <LinkIcon className="text-zinc-300 z-40 pointer-events-none" />
     </button>
   );
 }

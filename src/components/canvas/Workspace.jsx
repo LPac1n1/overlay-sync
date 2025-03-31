@@ -1,10 +1,10 @@
 import { ImagesProvider } from "../../context/Images.jsx";
 
-import Leave from "./Leave.jsx";
-import Link from "./Link.jsx";
-import Canvas from "./Canvas.jsx";
-import Drop from "./Drop.jsx";
-import Player from "./Player.jsx";
+import Leave from "./buttons/Leave.jsx";
+import Link from "./buttons/Link.jsx";
+import Canvas from "./sections/Canvas.jsx";
+import Drop from "./sections/Drop.jsx";
+import Player from "./sections/Player.jsx";
 
 function Workspace() {
   return (

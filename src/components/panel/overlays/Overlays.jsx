@@ -1,5 +1,5 @@
-import AddOverlay from "./AddOverlay";
-import CreatedOverlays from "./CreatedOverlays";
+import Options from "./sections/Options";
+import MyOverlays from "./sections/MyOverlays";
 
 function PanelOverlays() {
   return (
@@ -13,8 +13,8 @@ function PanelOverlays() {
       </div>
 
       <div className="flex flex-col gap-8">
-        <AddOverlay />
-        <CreatedOverlays />
+        <Options />
+        <MyOverlays />
       </div>
     </div>
   );

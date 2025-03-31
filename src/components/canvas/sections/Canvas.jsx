@@ -1,7 +1,7 @@
 import { useState, useEffect, createRef, useContext } from "react";
 import { v4 as uuid } from "uuid";
 
-import { ImagesContext } from "../../context/Images";
+import { ImagesContext } from "../../../context/Images";
 
 const resetCursor = () => {
   const allDOMElements = document.querySelectorAll("*");

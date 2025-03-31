@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, useContext } from "react";
 
-import { getStreamData } from "../../api/Twitch";
-import { ImagesContext } from "../../context/Images";
+import { getStreamData } from "../../../api/Twitch";
+import { ImagesContext } from "../../../context/Images";
 
 const ws = new WebSocket("ws://localhost:8080");
 

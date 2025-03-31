@@ -21,7 +21,7 @@ function Link() {
       onDragOver={(event) => event.preventDefault()}
       onDrop={(event) => event.preventDefault()}
       ref={buttonRef}
-      className="absolute right-16 -translate-x-3 top-4 bg-zinc-900 rounded-full p-3 z-50 transition-all hover:bg-zinc-700 hover:!cursor-pointer"
+      className="absolute right-20 -translate-x-3 top-8 bg-zinc-900 rounded-full p-3 z-50 transition-all hover:bg-zinc-700 hover:!cursor-pointer"
     >
       <LinkIcon className="text-zinc-300 z-40 pointer-events-none" />
     </button>

@@ -25,7 +25,7 @@ function Leave() {
       onDragOver={(event) => event.preventDefault()}
       onDrop={(event) => event.preventDefault()}
       ref={buttonRef}
-      className="absolute right-4 top-4 bg-zinc-900 rounded-full p-3 z-50 transition-all hover:bg-zinc-700 hover:!cursor-pointer"
+      className="absolute right-8 top-8 bg-zinc-900 rounded-full p-3 z-50 transition-all hover:bg-zinc-700 hover:!cursor-pointer"
     >
       <ArrowLeftIcon className="text-zinc-300 z-40 pointer-events-none" />
     </button>

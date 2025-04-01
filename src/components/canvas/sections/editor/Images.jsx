@@ -1,7 +1,15 @@
-import { useState, useEffect, createRef, useContext } from "react";
-import { v4 as uuid } from "uuid";
+import { useEffect, useContext } from "react";
 
-import { ImagesContext } from "../../../context/Images";
+import { ImagesContext } from "../../../../context/ImagesContext";
+
+const setCursor = (cursor, element = false) => {
+  if (element) return (element.style.cursor = cursor);
+
+  const allDOMElements = document.querySelectorAll("*");
+  return allDOMElements.forEach((element) => {
+    element.style.setProperty("cursor", `${cursor}`, "important");
+  });
+};
 
 const resetCursor = () => {
   const allDOMElements = document.querySelectorAll("*");
@@ -10,92 +18,13 @@ const resetCursor = () => {
   });
 };
 
-function Canvas() {
+function Images() {
   const { images, setImages } = useContext(ImagesContext);
-  const [imagesIndex, setImagesIndex] = useState([]);
-
-  const onCanvasDrop = (event) => {
-    event.preventDefault();
-
-    const { clientX, clientY } = event;
-    event.target.style.pointerEvents = "none";
-    const behindElement = document.elementFromPoint(clientX, clientY);
-    event.target.style.pointerEvents = "auto";
-
-    if (behindElement.id !== "drop-area") return;
-
-    const files = Array.from(event.dataTransfer.files);
-    files.forEach((file) => {
-      if (!file.type.startsWith("image")) {
-        return alert("Insira uma imagem válida!");
-      }
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        const image = new Image();
-        image.onload = () => {
-          const imageDOM = createRef();
-
-          setImagesIndex((prev) => {
-            return [...prev, prev.length + 1];
-          });
-
-          setImages((prev) => {
-            const width = image.width / 5;
-            const height = image.height / 5;
-
-            return [
-              ...prev,
-              {
-                id: `image-${uuid()}`,
-                url: reader.result,
-                name: file.name,
-                html: imageDOM,
-                dimensions: { width, height },
-                position: {
-                  x: event.clientX - width / 2,
-                  y: event.clientY - height / 2,
-                },
-                isSelected: false,
-                zIndex: prev.length + 1,
-              },
-            ];
-          });
-        };
-        image.src = reader.result;
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const onCanvasMouseDown = (event) => {
-    if (
-      event.target.id.startsWith("image") ||
-      event.target.id.endsWith("selection")
-    )
-      return;
-
-    // Check if there is any image selected.
-    let hasImageSelected = null;
-    images.map((image) => image.isSelected).includes(true)
-      ? (hasImageSelected = true)
-      : (hasImageSelected = false);
-
-    // If so, unselect it.
-    if (hasImageSelected) {
-      resetCursor();
-
-      return setImages((prev) =>
-        prev.map((image) => ({ ...image, isSelected: false }))
-      );
-    }
-
-    // If you don't have it, nothing happens.
-    return;
-  };
 
   const onImageMouseDown = (event) => {
     const selected = images.find((image) => image.id === event.target.id);
+
+    setCursor("move");
 
     let hasImageSelected = null;
     selected.isSelected
@@ -108,11 +37,10 @@ function Canvas() {
       setImages((prev) =>
         prev.map((image) =>
           image.id === selected.id
-            ? { ...image, isSelected: true, zIndex: imagesIndex.at(-1) }
+            ? { ...image, isSelected: true }
             : {
                 ...image,
                 isSelected: false,
-                zIndex: image.zIndex > 0 ? image.zIndex - 1 : image.zIndex,
               }
         )
       );
@@ -126,7 +54,7 @@ function Canvas() {
     const startY = event.clientY - selected.position.y;
 
     const onMouseMove = (event) => {
-      event.target.style.cursor = "move";
+      setCursor("move");
 
       const screenWidth = window.innerWidth;
       const screenHeight = window.innerHeight;
@@ -149,9 +77,10 @@ function Canvas() {
     };
 
     const onMouseUp = () => {
+      resetCursor();
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseup", onMouseUp);
-      resetCursor();
+      setCursor("grab", event.target);
     };
 
     document.addEventListener("mousemove", onMouseMove);
@@ -324,6 +253,7 @@ function Canvas() {
       const onMouseUp = () => {
         document.removeEventListener("mousemove", onMouseMove);
         document.removeEventListener("mouseup", onMouseUp);
+        resetCursor();
       };
 
       document.addEventListener("mousemove", onMouseMove);
@@ -342,6 +272,7 @@ function Canvas() {
     };
 
     const side = cursorToSide[selection.style.cursor];
+    setCursor(selection.style.cursor);
     if (side) resizeImage(side);
   };
 
@@ -350,7 +281,6 @@ function Canvas() {
     const onKeyDown = (event) => {
       if (event.key === "Delete") {
         setImages((prev) => prev.filter((image) => !image.isSelected));
-        setImagesIndex((prev) => prev.slice(0, -1));
       }
     };
 
@@ -359,52 +289,43 @@ function Canvas() {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [setImages]);
 
-  return (
+  return images.map((img) => (
     <div
-      onMouseDown={(event) => onCanvasMouseDown(event)}
-      onDragOver={(event) => event.preventDefault(event)}
-      onDrop={(event) => onCanvasDrop(event)}
-      id="canvas"
-      className="w-screen h-screen absolute z-40"
+      onMouseDown={
+        img.isSelected ? (event) => onSelectionMouseDown(event) : null
+      }
+      onMouseMove={
+        img.isSelected ? (event) => onSelectionMouseMove(event) : null
+      }
+      key={img.id}
+      id={`${img.id}-selection`}
+      className="absolute flex justify-center items-center"
+      style={{
+        width: img.dimensions.width + 10,
+        height: img.dimensions.height + 10,
+        top: img.position.y,
+        left: img.position.x,
+        border: img.isSelected ? "2.5px solid cornflowerblue" : "none",
+        zIndex: img.zIndex - 1,
+      }}
     >
-      {images.map((img) => (
-        <div
-          onMouseDown={
-            img.isSelected ? (event) => onSelectionMouseDown(event) : null
-          }
-          onMouseMove={
-            img.isSelected ? (event) => onSelectionMouseMove(event) : null
-          }
-          key={img.id}
-          id={`${img.id}-selection`}
-          className="absolute flex justify-center items-center"
-          style={{
-            width: img.dimensions.width + 10,
-            height: img.dimensions.height + 10,
-            top: img.position.y,
-            left: img.position.x,
-            border: img.isSelected ? "2.5px solid cornflowerblue" : "none",
-            zIndex: img.zIndex - 1,
-          }}
-        >
-          <img
-            onMouseDown={(event) => onImageMouseDown(event)}
-            id={img.id}
-            ref={img.html}
-            src={img.url}
-            alt={img.name}
-            width={img.dimensions.width}
-            height={img.dimensions.height}
-            draggable={false}
-            className="select-none"
-            style={{
-              zIndex: img.zIndex,
-            }}
-          />
-        </div>
-      ))}
+      <img
+        onMouseOver={(event) => (event.target.style.cursor = "grab")}
+        onMouseDown={(event) => onImageMouseDown(event)}
+        id={img.id}
+        ref={img.html}
+        src={img.url}
+        alt={img.name}
+        width={img.dimensions.width}
+        height={img.dimensions.height}
+        draggable={false}
+        className="select-none"
+        style={{
+          zIndex: img.zIndex,
+        }}
+      />
     </div>
-  );
+  ));
 }
 
-export default Canvas;
+export default Images;

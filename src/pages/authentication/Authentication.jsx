@@ -1,6 +1,6 @@
-import Login from "./sections/Login.jsx";
-import Register from "./sections/Register.jsx";
-import Swap from "./sections/Swap.jsx";
+import Login from "./components/Login.jsx";
+import Register from "./components/Register.jsx";
+import Swap from "./components/Swap.jsx";
 
 function Authentication() {
   return (

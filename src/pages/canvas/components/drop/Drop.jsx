@@ -86,7 +86,7 @@ function Drop() {
           onClick={handleDropAreaButtonClick}
           onDragOver={(event) => event.preventDefault()}
           onDrop={(event) => event.preventDefault()}
-          className="bg-zinc-900 rounded-full p-3 z-50 transition-all hover:bg-zinc-700 hover:!cursor-pointer"
+          className="bg-zinc-900 rounded-full p-4 z-50 transition-all hover:bg-zinc-700 hover:!cursor-pointer"
         >
           <ChevronLeftIcon
             ref={chevronIconRef}

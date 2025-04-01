@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Home from "./components/home/Home.jsx";
-import Authentication from "./components/authentication/Authentication.jsx";
-import Panel from "./components/panel/Panel.jsx";
-import Canvas from "./components/canvas/Canvas.jsx";
-import Overlay from "./components/overlay/Overlay.jsx";
-import NotFound from "./components/NotFound.jsx";
+import Home from "./pages/home/Home.jsx";
+import Authentication from "./pages/authentication/Authentication.jsx";
+import Panel from "./pages/panel/Panel.jsx";
+import Canvas from "./pages/canvas/Canvas.jsx";
+import Overlay from "./pages/overlay/Overlay.jsx";
+import NotFound from "./pages/others/NotFound.jsx";
 
 function App() {
   return (

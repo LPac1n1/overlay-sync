@@ -1,10 +1,10 @@
 import { ImagesProvider } from "../../context/ImagesContext.jsx";
 
-import Buttons from "./sections/buttons/Buttons.jsx";
-import Toolbar from "./sections/toolbar/Toolbar.jsx";
-import Editor from "./sections/editor/Editor.jsx";
-import Drop from "./sections/drop/Drop.jsx";
-import Workspace from "./sections/workspace/Workspace.jsx";
+import Buttons from "./components/buttons/Buttons.jsx";
+import Toolbar from "./components/toolbar/Toolbar.jsx";
+import Editor from "./components/editor/Editor.jsx";
+import Drop from "./components/drop/Drop.jsx";
+import Workspace from "./components/workspace/Workspace.jsx";
 
 function Canvas() {
   return (

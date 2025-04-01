@@ -1,5 +1,5 @@
-import PanelNavbar from "./PanelNavbar";
-import Overlays from "./overlays/Overlays";
+import PanelNavbar from "./components/PanelNavbar.jsx";
+import Overlays from "./components/overlays/Overlays.jsx";
 
 function Panel() {
   return (

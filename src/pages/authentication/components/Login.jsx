@@ -33,7 +33,7 @@ function Login() {
                 type="email"
                 placeholder="Email"
                 autoComplete="off"
-                className="w-full h-12 bg-zinc-700 text-zinc-400 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
+                className="w-full h-12 bg-zinc-700 text-zinc-400 placeholder:text-zinc-500 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
               />
               <div className="relative">
                 <input
@@ -41,7 +41,7 @@ function Login() {
                   type="password"
                   placeholder="Senha"
                   autoComplete="off"
-                  className="w-full h-12 bg-zinc-700 text-zinc-400 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
+                  className="w-full h-12 bg-zinc-700 text-zinc-400 placeholder:text-zinc-500 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
                 />
                 <div
                   ref={eyeClosedRef}

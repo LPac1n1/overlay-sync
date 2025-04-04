@@ -32,16 +32,6 @@ function CreateOverlayWidget() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <p className="text-lg text-zinc-400">Plataforma</p>
-                <input
-                  type="text"
-                  placeholder="Ex: Twitch"
-                  autoComplete="off"
-                  className="w-full h-12 bg-zinc-700 text-zinc-400 placeholder:text-zinc-500 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
                 <p className="text-lg text-zinc-400">Link RTMP</p>
                 <input
                   type="text"

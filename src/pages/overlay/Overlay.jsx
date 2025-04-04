@@ -2,6 +2,15 @@ import { useEffect, useRef, useState } from "react";
 
 const ws = new WebSocket("ws://localhost:8080");
 
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("./src/utils/service-worker.js")
+    .then((reg) => {
+      console.log("Service Worker registrado com sucesso!", reg);
+    })
+    .catch((err) => console.error("Erro ao registrar Service Worker:", err));
+}
+
 function Overlay() {
   const overlayRef = useRef(null);
   const [images, setImages] = useState([]);

@@ -1,17 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 
-const ws = new WebSocket("ws://localhost:8080");
-
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("./src/utils/service-worker.js")
-    .then((reg) => {
-      console.log("Service Worker registrado com sucesso!", reg);
-    })
-    .catch((err) => console.error("Erro ao registrar Service Worker:", err));
-}
+import { io } from "socket.io-client";
 
 function Overlay() {
+  const socketRef = useRef(null);
   const overlayRef = useRef(null);
   const [images, setImages] = useState([]);
 
@@ -37,19 +29,22 @@ function Overlay() {
   };
 
   useEffect(() => {
-    ws.onopen = () => {
-      ws.send(JSON.stringify({ type: "overlay" }));
-    };
+    socketRef.current = io("http://localhost:3000");
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setImages(transformScale(data.data.playerData, data.data.imagesData));
+    socketRef.current.on("connect", () => {
+      socketRef.current.emit("message", { type: "overlay" });
+    });
+
+    socketRef.current.on("message", (data) => {
+      setImages(transformScale(data.playerData, data.imagesData));
+    });
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
     };
   }, []);
-
-  useEffect(() => {
-    console.log(images);
-  }, [images]);
 
   return (
     <div

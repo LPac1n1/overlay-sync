@@ -1,14 +1,24 @@
 import { useRef, useState, useEffect, useContext } from "react";
-
 import { ImagesContext } from "../../../../context/ImagesContext";
 
-const ws = new WebSocket("ws://localhost:8080");
+import { io } from "socket.io-client";
 
 function Player() {
+  const socketRef = useRef(null);
   const playerRef = useRef();
 
   const { images } = useContext(ImagesContext);
   const [imagesOverPlayer, setImagesOverPlayer] = useState(new Set());
+
+  useEffect(() => {
+    socketRef.current = io("http://localhost:3000");
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!playerRef.current) return;
@@ -60,7 +70,6 @@ function Player() {
         height: playerRect.height,
       };
     };
-
     const playerData = playerRef.current ? getPlayerData() : null;
     const imagesData = Array.from(imagesOverPlayer).map((image) => {
       const rect = image.getBoundingClientRect();
@@ -75,11 +84,10 @@ function Player() {
       };
     });
 
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.send(
-        JSON.stringify({ type: "user", data: { imagesData, playerData } })
-      );
-    }
+    socketRef.current.emit("message", {
+      type: "user",
+      content: { playerData, imagesData },
+    });
   }, [imagesOverPlayer]);
 
   return (

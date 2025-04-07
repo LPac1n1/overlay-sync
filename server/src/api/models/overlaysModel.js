@@ -27,7 +27,7 @@ const createOverlay = async (overlay) => {
     canvas_link,
   ]);
   const overlayId = createdOverlay.rows[0].id;
-  return { overlayId };
+  return { id: overlayId };
 };
 
 const updateOverlayChannelName = async (overlay, overlayId) => {

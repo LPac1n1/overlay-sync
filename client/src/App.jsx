@@ -14,8 +14,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/authentication" element={<Authentication />} />
         <Route path="/panel" element={<Panel />} />
-        <Route path="/canvas/" element={<Canvas />} />
-        <Route path="/overlay/" element={<Overlay />} />
+        <Route path="/canvas/:id" element={<Canvas />} />
+        <Route path="/overlay/:id" element={<Overlay />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

@@ -15,7 +15,7 @@ const createUser = async (user) => {
 
   const createdUser = await client.query(query, [name, email, password]);
   const userId = createdUser.rows[0].id;
-  return { userId };
+  return { id: userId };
 };
 
 const updateUserName = async (user, userId) => {

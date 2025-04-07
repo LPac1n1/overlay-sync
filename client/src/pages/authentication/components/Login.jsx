@@ -47,6 +47,8 @@ function Login() {
   };
 
   const onSubmit = async (oldUser) => {
+    const submit = document.getElementById("login-submit");
+
     const users = await GetUsersData();
     const user = users.find((user) => user.email === oldUser.email);
 
@@ -65,6 +67,7 @@ function Login() {
     }
 
     localStorage.setItem("userId", user.id);
+    submit.style.pointerEvents = "none";
 
     navigate("/panel");
   };
@@ -125,6 +128,7 @@ function Login() {
             </div>
             <div>
               <input
+                id="login-submit"
                 type="submit"
                 value="Entrar"
                 className="text-zinc-400 bg-zinc-900 px-4 py-2 rounded-lg z-10 transition-all hover:bg-zinc-700 hover:cursor-pointer"

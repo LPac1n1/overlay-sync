@@ -66,6 +66,8 @@ function Register() {
   };
 
   const onSubmit = async (newUser) => {
+    const submit = document.getElementById("register-submit");
+
     const users = await GetUsersData();
     const names = users.map((user) => user.name);
     const emails = users.map((user) => user.email);
@@ -85,6 +87,7 @@ function Register() {
 
     const createdUser = await PostUsersData(newUser);
     localStorage.setItem("userId", createdUser.id);
+    submit.style.pointerEvents = "none";
 
     navigate("/panel");
   };
@@ -156,6 +159,7 @@ function Register() {
             </div>
             <div>
               <input
+                id="register-submit"
                 type="submit"
                 value="Registrar"
                 className="text-zinc-400 bg-zinc-900 px-4 py-2 rounded-lg z-10 transition-all hover:bg-zinc-700 hover:cursor-pointer"

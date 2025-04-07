@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
+import { AnimatePresence, motion } from "framer-motion";
+
 function Modal({ isOpen, onClose, children }) {
   const [show, setShow] = useState(false);
 
@@ -25,38 +27,29 @@ function Modal({ isOpen, onClose, children }) {
   if (!show) return null;
 
   return (
-    <div
-      id="modal-overlay"
-      ref={modalOverlayRef}
-      onClick={HandleOutClick}
-      className={`absolute left-0 top-0 w-screen h-screen flex justify-center items-center bg-zinc-900/50 backdrop-blur-sm z-50 overflow-hidden opacity-0 duration-300 transition-opacity ${
-        isOpen
-          ? setTimeout(
-              () =>
-                modalOverlayRef.current.classList.replace(
-                  "opacity-0",
-                  "opacity-100"
-                ),
-              50
-            )
-          : "opacity-0"
-      }`}
-    >
-      <div
-        ref={modalRef}
-        className={`w-1/4 bg-zinc-800 rounded-2xl p-8 scale-95 duration-300 transition-all ${
-          isOpen
-            ? setTimeout(
-                () =>
-                  modalRef.current.classList.replace("scale-95", "scale-100"),
-                50
-              )
-            : "scale-95"
-        }`}
-      >
-        {children}
-      </div>
-    </div>
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          id="modal-overlay"
+          ref={modalOverlayRef}
+          onClick={HandleOutClick}
+          className={`absolute left-0 top-0 w-screen h-screen flex justify-center items-center bg-zinc-900/50 backdrop-blur-sm z-50 overflow-hidden`}
+        >
+          <motion.div
+            initial={{ scale: 0.95 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.95 }}
+            ref={modalRef}
+            className={`w-1/4 bg-zinc-800 rounded-2xl p-8`}
+          >
+            {children}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 

@@ -6,7 +6,10 @@ function PanelNavbar() {
       <div className="w-12 h-12 flex justify-start items-center">
         <BringToFrontIcon className="w-full h-full text-zinc-200 stroke-1" />
       </div>
-      <div className=" bg-zinc-900 rounded-full p-3 hover:cursor-pointer">
+      <div
+        onClick={() => localStorage.removeItem("userId")}
+        className=" bg-zinc-900 rounded-full p-3 hover:cursor-pointer"
+      >
         <UserRoundIcon className="text-zinc-400 pointer events-none" />
       </div>
     </div>

@@ -1,22 +1,24 @@
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { EyeClosedIcon, EyeIcon } from "lucide-react";
 
-import GetUsersData from "../../../services/api/GetUsersData.js";
+import loginUser from "../../../services/api/loginUser";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const loginFormSchema = z.object({
-  email: z.string().email("Email inválido").toLowerCase(),
-  password: z.string(),
+  email: z
+    .string()
+    .email("Email inválido")
+    .transform((email) => {
+      return email.toLowerCase();
+    }),
+  password: z.string().min(1, "Senha não pode ser vazia"),
 });
 
 function Login() {
-  const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
@@ -47,36 +49,25 @@ function Login() {
   };
 
   const onSubmit = async (oldUser) => {
-    const submit = document.getElementById("login-submit");
+    try {
+      console.log(await loginUser(oldUser));
+    } catch (error) {
+      const { message } = JSON.parse(error.message);
 
-    const users = await GetUsersData();
-    const user = users.find((user) => user.email === oldUser.email);
-
-    if (!user) {
-      return setError("email", {
-        type: "manual",
-        message: "Este email não está cadastrado",
-      });
+      if (message.includes("invalid")) {
+        setError("login", {
+          type: "manual",
+          message: "Email ou senha inválidos",
+        });
+      }
     }
-
-    if (user.password !== oldUser.password) {
-      return setError("password", {
-        type: "manual",
-        message: "Senha inválida",
-      });
-    }
-
-    localStorage.setItem("userId", user.id);
-    submit.style.pointerEvents = "none";
-
-    navigate("/panel");
   };
 
   return (
     <div className="w-full h-full flex justify-center items-center">
       <div className="w-full max-w-[540px] flex flex-col items-center text-center gap-8 p-8">
         <h3 className="text-4xl text-zinc-300">Entrar na conta</h3>
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+        <form noValidate onSubmit={handleSubmit(onSubmit)} className="w-full">
           <div className="flex flex-col items-center gap-8">
             <div className="w-full flex flex-col gap-4">
               <div className="flex flex-col gap-2">
@@ -119,10 +110,15 @@ function Login() {
                     <EyeIcon className="text-zinc-400 pointer-events-none" />
                   </div>
                 </div>
+
                 {errors.password && (
                   <span className="text-rose-500">
                     {errors.password.message}
                   </span>
+                )}
+
+                {errors.login && (
+                  <span className="text-rose-500">{errors.login.message}</span>
                 )}
               </div>
             </div>

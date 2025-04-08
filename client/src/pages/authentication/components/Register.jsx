@@ -1,10 +1,8 @@
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { EyeClosedIcon, EyeIcon } from "lucide-react";
 
-import GetUsersData from "../../../services/api/GetUsersData";
-import PostUsersData from "../../../services/api/PostUsersData";
+import registerUser from "../../../services/api/registerUser";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -29,18 +27,18 @@ const registerFormSchema = z.object({
     .transform((name) => {
       return capitalizeText(name);
     }),
-  email: z.string().email("Email inválido").toLowerCase(),
+  email: z
+    .string()
+    .email("Email inválido")
+    .transform((email) => email.toLowerCase()),
   password: z.string().min(6, "A senha precisa ter no mínimo 6 caracteres"),
 });
 
 function Register() {
-  const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
     setError,
-    clearErrors,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(registerFormSchema),
@@ -66,46 +64,41 @@ function Register() {
   };
 
   const onSubmit = async (newUser) => {
-    const submit = document.getElementById("register-submit");
+    try {
+      await registerUser(newUser);
+    } catch (error) {
+      const { message } = JSON.parse(error.message);
 
-    const users = await GetUsersData();
-    const names = users.map((user) => user.name);
-    const emails = users.map((user) => user.email);
+      if (message.includes("email")) {
+        setError("email", {
+          type: "manual",
+          message: "Email já cadastrado",
+        });
+      }
 
-    if (emails.includes(newUser.email.toLocaleLowerCase())) {
-      return setError("email", {
-        type: "manual",
-        message: "Este email já está cadastrado",
-      });
+      if (message.includes("name")) {
+        setError("name", {
+          type: "manual",
+          message: "Nome de usuário já está em uso",
+        });
+      }
     }
-
-    if (names.includes(capitalizeText(newUser.name)))
-      return setError("name", {
-        type: "manual",
-        message: "Nome de usuário já está em uso",
-      });
-
-    const createdUser = await PostUsersData(newUser);
-    localStorage.setItem("userId", createdUser.id);
-    submit.style.pointerEvents = "none";
-
-    navigate("/panel");
   };
 
   return (
     <div className="w-full h-full flex justify-center items-center">
       <div className="w-full max-w-[540px] flex flex-col items-center text-center gap-8 p-8">
         <h3 className="text-4xl text-zinc-300">Registrar uma conta</h3>
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+        <form noValidate onSubmit={handleSubmit(onSubmit)} className="w-full">
           <div className="flex flex-col items-center gap-8">
             <div className="w-full flex flex-col gap-4">
               <div className="flex flex-col gap-2">
                 <input
+                  {...register("name")}
                   type="text"
                   placeholder="Nome"
                   autoComplete="off"
                   className="w-full h-12 bg-zinc-700 text-zinc-400 placeholder:text-zinc-500 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
-                  {...register("name")}
                 />
                 {errors.name && (
                   <span className="text-rose-500">{errors.name.message}</span>
@@ -113,12 +106,11 @@ function Register() {
               </div>
               <div className="flex flex-col gap-2">
                 <input
+                  {...register("email")}
                   type="email"
                   placeholder="Email"
                   autoComplete="off"
                   className="w-full h-12 bg-zinc-700 text-zinc-400 placeholder:text-zinc-500 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
-                  {...register("email")}
-                  onChange={() => clearErrors("email")}
                 />
                 {errors.email && (
                   <span className="text-rose-500">{errors.email.message}</span>
@@ -127,13 +119,12 @@ function Register() {
               <div className="flex flex-col gap-2">
                 <div className="relative">
                   <input
+                    {...register("password")}
                     id="password-input-2"
                     type="password"
                     placeholder="Senha"
                     autoComplete="off"
                     className="w-full h-12 bg-zinc-700 text-zinc-400 placeholder:text-zinc-500 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
-                    {...register("password")}
-                    onChange={() => clearErrors("password")}
                   />
                   <div
                     ref={eyeClosedRef}
@@ -159,7 +150,6 @@ function Register() {
             </div>
             <div>
               <input
-                id="register-submit"
                 type="submit"
                 value="Registrar"
                 className="text-zinc-400 bg-zinc-900 px-4 py-2 rounded-lg z-10 transition-all hover:bg-zinc-700 hover:cursor-pointer"

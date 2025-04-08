@@ -5,6 +5,11 @@ const getAllUsers = async (_request, response) => {
   return response.status(200).json(users);
 };
 
+const getUserByEmail = async (request, response) => {
+  const getedUser = await usersModel.getUserByEmail(request.body);
+  return response.status(201).json(getedUser);
+};
+
 const createUser = async (request, response) => {
   const createdUser = await usersModel.createUser(request.body);
   return response.status(201).json(createdUser);
@@ -32,6 +37,7 @@ const deleteUser = async (request, response) => {
 
 export default {
   getAllUsers,
+  getUserByEmail,
   createUser,
   updateUserName,
   updateUserPassword,

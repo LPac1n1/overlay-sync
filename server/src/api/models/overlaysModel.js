@@ -7,6 +7,13 @@ const getAllOverlays = async () => {
   return overlays.rows;
 };
 
+const getOverlaysByCreatorUserId = async (userId) => {
+  const query = "SELECT * FROM overlays WHERE creator_user_id = $1";
+
+  const result = await client.query(query, [userId]);
+  return result.rows;
+};
+
 const createOverlay = async (overlay, user) => {
   const { channel_name, channel_picture, stream_key, canvas_route } = overlay;
   const creator_user_id = user.id;
@@ -62,6 +69,7 @@ const deleteOverlay = async (overlayId) => {
 
 export default {
   getAllOverlays,
+  getOverlaysByCreatorUserId,
   createOverlay,
   updateOverlayChannelName,
   updateOverlayChannelPicture,

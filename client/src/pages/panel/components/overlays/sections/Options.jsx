@@ -1,5 +1,5 @@
 import JoinOverlayWidget from "../widgets/JoinOverlayWidget";
-import CreateOverlayWidget from "../widgets/createOverlayWidget";
+import CreateOverlayWidget from "../widgets/CreateOverlayWidget";
 
 function Options() {
   return (

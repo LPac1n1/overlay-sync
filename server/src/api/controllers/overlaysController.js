@@ -5,6 +5,13 @@ const getAllOverlays = async (_request, response) => {
   return response.status(200).json(overlays);
 };
 
+const getOverlaysByCreatorUserId = async (request, response) => {
+  const getedOverlays = await overlaysModel.getOverlaysByCreatorUserId(
+    request.user.id
+  );
+  return response.status(200).json(getedOverlays);
+};
+
 const createOverlay = async (request, response) => {
   const overlay = await overlaysModel.createOverlay(request.body, request.user);
   return response.status(201).json({ overlay });
@@ -30,6 +37,7 @@ const deleteOverlay = async (request, response) => {
 
 export default {
   getAllOverlays,
+  getOverlaysByCreatorUserId,
   createOverlay,
   updateOverlayChannelName,
   updateOverlayChannelPicture,

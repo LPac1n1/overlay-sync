@@ -16,7 +16,7 @@ router.get("/api/auth", tokensController.verifyToken);
 
 // USERS ROUTE
 
-// Get users data
+// Get all users
 router.get("/api/users", usersController.getAllUsers);
 
 // Login user
@@ -72,8 +72,15 @@ router.delete(
 
 // OVERLAYS ROUTE
 
-// Get overlays data
+// Get all overlays
 router.get("/api/overlays", overlaysController.getAllOverlays);
+
+// Get user overlays
+router.get(
+  "/api/overlays/created",
+  tokensMiddleware.authToken,
+  overlaysController.getOverlaysByCreatorUserId
+);
 
 // Create overlay
 router.post(

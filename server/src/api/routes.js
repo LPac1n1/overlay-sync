@@ -1,6 +1,5 @@
 import express from "express";
 
-import tokensController from "./controllers/tokensController.js";
 import usersController from "./controllers/usersController.js";
 import usersMiddleware from "./middlewares/usersMiddleware.js";
 import overlaysController from "./controllers/overlaysController.js";
@@ -19,7 +18,7 @@ router.post(
   usersMiddleware.validateEmailField,
   usersMiddleware.validatePasswordField,
   usersMiddleware.validateUserLogin,
-  tokensController.createTokens
+  usersController.loginUser
 );
 
 // Register user

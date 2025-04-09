@@ -65,7 +65,7 @@ function Register() {
 
   const onSubmit = async (newUser) => {
     try {
-      await registerUser(newUser);
+      console.log(await registerUser(newUser));
     } catch (error) {
       const { message } = JSON.parse(error.message);
 

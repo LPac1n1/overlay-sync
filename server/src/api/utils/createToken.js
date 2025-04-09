@@ -10,7 +10,11 @@ const createToken = (response, status, user) => {
       maxAge: 3600000,
     })
     .status(status)
-    .json({ message: "success" });
+    .json({
+      message: {
+        id: user.id,
+      },
+    });
 };
 
 export default createToken;

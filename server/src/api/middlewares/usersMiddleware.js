@@ -8,7 +8,9 @@ const validateNameField = async (request, response, next) => {
   }
 
   if (body.name === "") {
-    return response.status(400).json({ message: "'name' field is missing" });
+    return response
+      .status(400)
+      .json({ message: "'name' field cannot be empty" });
   }
 
   next();
@@ -22,7 +24,9 @@ const validateEmailField = async (request, response, next) => {
   }
 
   if (body.email === "") {
-    return response.status(400).json({ message: "'email' field is missing" });
+    return response
+      .status(400)
+      .json({ message: "'email' field cannot be empty" });
   }
 
   next();
@@ -40,7 +44,7 @@ const validatePasswordField = async (request, response, next) => {
   if (body.password === "") {
     return response
       .status(400)
-      .json({ message: "'password' field is missing" });
+      .json({ message: "'password' field cannot be empty" });
   }
 
   next();
@@ -58,7 +62,7 @@ const validateProfilePictureField = async (request, response, next) => {
   if (body.profile_picture === "") {
     return response
       .status(400)
-      .json({ message: "'profile_picture' field is missing" });
+      .json({ message: "'profile_picture' field cannot be empty" });
   }
 
   next();

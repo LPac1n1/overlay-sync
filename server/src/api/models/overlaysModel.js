@@ -7,24 +7,19 @@ const getAllOverlays = async () => {
   return overlays.rows;
 };
 
-const createOverlay = async (overlay) => {
-  const {
-    creator_user_id,
-    channel_name,
-    channel_picture,
-    stream_key,
-    canvas_link,
-  } = overlay;
+const createOverlay = async (overlay, user) => {
+  const { channel_name, channel_picture, stream_key, canvas_route } = overlay;
+  const creator_user_id = user.id;
 
   const query =
-    "INSERT INTO overlays (creator_user_id, channel_name, channel_picture, stream_key, canvas_link) VALUES ($1, $2, $3, $4, $5) RETURNING *";
+    "INSERT INTO overlays (creator_user_id, channel_name, channel_picture, stream_key, canvas_route) VALUES ($1, $2, $3, $4, $5) RETURNING *";
 
   const createdOverlay = await client.query(query, [
     creator_user_id,
     channel_name,
     channel_picture,
     stream_key,
-    canvas_link,
+    canvas_route,
   ]);
   const overlayId = createdOverlay.rows[0].id;
   return { id: overlayId };

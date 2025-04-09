@@ -73,15 +73,12 @@ router.delete(
 // OVERLAYS ROUTE
 
 // Get overlays data
-router.get(
-  "/api/overlays",
-  tokensMiddleware.authToken,
-  overlaysController.getAllOverlays
-);
+router.get("/api/overlays", overlaysController.getAllOverlays);
 
 // Create overlay
 router.post(
   "/api/overlays",
+  tokensMiddleware.authToken,
   overlaysMiddleware.validatePostBody,
   overlaysController.createOverlay
 );
@@ -89,6 +86,7 @@ router.post(
 // Update overlay channel name
 router.put(
   "/api/overlays/:id/channel_name",
+  tokensMiddleware.authToken,
   overlaysMiddleware.validateChannelNameField,
   overlaysController.updateOverlayChannelName
 );
@@ -96,11 +94,16 @@ router.put(
 // Update overlay channel picture
 router.put(
   "/api/overlays/:id/channel_picture",
+  tokensMiddleware.authToken,
   overlaysMiddleware.validateChannelPictureField,
   overlaysController.updateOverlayChannelPicture
 );
 
 // Delete overlay
-router.delete("/api/overlays/:id", overlaysController.deleteOverlay);
+router.delete(
+  "/api/overlays/:id",
+  // tokensMiddleware.authToken,
+  overlaysController.deleteOverlay
+);
 
 export default router;

@@ -1,67 +1,40 @@
-import usersModel from "../models/usersModel.js";
 import overlaysModel from "../models/overlaysModel.js";
 
 const validatePostBody = async (request, response, next) => {
   const { body } = request;
 
   if (
-    body.creator_user_id === undefined ||
     body.channel_name === undefined ||
     body.channel_picture === undefined ||
     body.stream_key === undefined ||
-    body.canvas_link === undefined
+    body.canvas_route === undefined
   ) {
-    return response
-      .status(400)
-      .json({ message: "Faltando campos obrigatórios" });
+    return response.status(400).json({ message: "missing required fields" });
   }
 
   if (
-    body.creator_user_id === "" ||
     body.channel_name === "" ||
     body.channel_picture === "" ||
     body.stream_key === "" ||
-    body.canvas_link === ""
+    body.canvas_route === ""
   ) {
-    return response
-      .status(400)
-      .json({ message: "Campos não podem ser vazios" });
+    return response.status(400).json({ message: "fields cannot be empty" });
   }
-
-  const users = await usersModel.getAllUsers();
-  const ids = users.map((user) => user.id.toString());
-  let userExists = false;
-
-  for (const id of ids) {
-    if (id === body.creator_user_id) {
-      userExists = true;
-      break;
-    }
-  }
-
-  if (!userExists)
-    return response
-      .status(400)
-      .json({ message: "ID de usuário criador não encontrado" });
 
   const overlays = await overlaysModel.getAllOverlays();
-  const streamKeys = overlays.map((overlay) => overlay.stream_key.toString());
-  const canvasLinks = overlays.map((overlay) => overlay.canvas_link.toString());
+  const streamKeys = new Set(
+    overlays.map((overlay) => overlay.stream_key.toString())
+  );
+  const canvasRoutes = new Set(
+    overlays.map((overlay) => overlay.canvas_route.toString())
+  );
 
-  for (const streamKey of streamKeys) {
-    if (streamKey === body.stream_key) {
-      return response
-        .status(400)
-        .json({ message: "Chave da stream já existe para outro usuário" });
-    }
+  if (streamKeys.has(body.stream_key)) {
+    return response.status(400).json({ message: "stream key alread exists" });
   }
 
-  for (const canvasLink of canvasLinks) {
-    if (canvasLink === body.canvas_link) {
-      return response
-        .status(400)
-        .json({ message: "Canvas já existe para outro usuário" });
-    }
+  if (canvasRoutes.has(body.canvas_route)) {
+    return response.status(400).json({ message: "canvas route alread exists" });
   }
 
   next();
@@ -73,13 +46,13 @@ const validateChannelNameField = async (request, response, next) => {
   if (body.channel_name === undefined) {
     return response
       .status(400)
-      .json({ message: "Campo 'channel_name' faltando" });
+      .json({ message: "'channel_name' field is missing" });
   }
 
   if (body.channel_name === "") {
     return response
       .status(400)
-      .json({ message: "Campo 'channel_name' está vazio" });
+      .json({ message: "'channel_name' field cannot be empty" });
   }
 
   next();
@@ -91,13 +64,13 @@ const validateChannelPictureField = async (request, response, next) => {
   if (body.channel_picture === undefined) {
     return response
       .status(400)
-      .json({ message: "Campo 'channel_picture' faltando" });
+      .json({ message: "'channel_picture' field is missing" });
   }
 
   if (body.channel_picture === "") {
     return response
       .status(400)
-      .json({ message: "Campo 'channel_picture' está vazio" });
+      .json({ message: "'channel_picture' field cannot be empty" });
   }
 
   next();

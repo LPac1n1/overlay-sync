@@ -6,8 +6,8 @@ const getAllOverlays = async (_request, response) => {
 };
 
 const createOverlay = async (request, response) => {
-  const overlay = await overlaysModel.createOverlay(request.body);
-  return response.status(201).json(overlay);
+  const overlay = await overlaysModel.createOverlay(request.body, request.user);
+  return response.status(201).json({ overlay });
 };
 
 const updateOverlayChannelName = async (request, response) => {

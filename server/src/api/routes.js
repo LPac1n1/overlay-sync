@@ -4,8 +4,15 @@ import usersController from "./controllers/usersController.js";
 import usersMiddleware from "./middlewares/usersMiddleware.js";
 import overlaysController from "./controllers/overlaysController.js";
 import overlaysMiddleware from "./middlewares/overlaysMiddleware.js";
+import tokensController from "./controllers/tokensController.js";
+import tokensMiddleware from "./middlewares/tokensMiddleware.js";
 
 const router = express.Router();
+
+// AUTH ROUTE
+
+// Verify token
+router.get("/api/auth", tokensController.verifyToken);
 
 // USERS ROUTE
 
@@ -35,6 +42,7 @@ router.post(
 // Update user name
 router.put(
   "/api/users/:id/name",
+  tokensMiddleware.authToken,
   usersMiddleware.validateNameField,
   usersController.updateUserName
 );
@@ -42,6 +50,7 @@ router.put(
 // Update user password
 router.put(
   "/api/users/:id/password",
+  tokensMiddleware.authToken,
   usersMiddleware.validatePasswordField,
   usersController.updateUserPassword
 );
@@ -49,17 +58,26 @@ router.put(
 // Update user profile picture
 router.put(
   "/api/users/:id/profile_picture",
+  tokensMiddleware.authToken,
   usersMiddleware.validateProfilePictureField,
   usersController.updateUserProfilePicture
 );
 
 // Delete user
-router.delete("/api/users/:id", usersController.deleteUser);
+router.delete(
+  "/api/users/:id",
+  // tokensMiddleware.authToken,
+  usersController.deleteUser
+);
 
 // OVERLAYS ROUTE
 
 // Get overlays data
-router.get("/api/overlays", overlaysController.getAllOverlays);
+router.get(
+  "/api/overlays",
+  tokensMiddleware.authToken,
+  overlaysController.getAllOverlays
+);
 
 // Create overlay
 router.post(

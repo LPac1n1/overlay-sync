@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { EyeClosedIcon, EyeIcon } from "lucide-react";
 
@@ -19,6 +20,8 @@ const loginFormSchema = z.object({
 });
 
 function Login() {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -50,7 +53,8 @@ function Login() {
 
   const onSubmit = async (oldUser) => {
     try {
-      console.log(await loginUser(oldUser));
+      await loginUser(oldUser);
+      navigate("/panel");
     } catch (error) {
       const { message } = JSON.parse(error.message);
 

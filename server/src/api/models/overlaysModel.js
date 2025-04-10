@@ -7,11 +7,18 @@ const getAllOverlays = async () => {
   return overlays.rows;
 };
 
+const getOverlayById = async (overlayId) => {
+  const query = "SELECT * FROM overlays WHERE id = $1";
+
+  const overlay = await client.query(query, [overlayId]);
+  return overlay.rows[0];
+};
+
 const getOverlaysByCreatorUserId = async (userId) => {
   const query = "SELECT * FROM overlays WHERE creator_user_id = $1";
 
-  const result = await client.query(query, [userId]);
-  return result.rows;
+  const overlays = await client.query(query, [userId]);
+  return overlays.rows;
 };
 
 const createOverlay = async (overlay, user) => {
@@ -69,6 +76,7 @@ const deleteOverlay = async (overlayId) => {
 
 export default {
   getAllOverlays,
+  getOverlayById,
   getOverlaysByCreatorUserId,
   createOverlay,
   updateOverlayChannelName,

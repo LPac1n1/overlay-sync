@@ -40,6 +40,23 @@ const validatePostBody = async (request, response, next) => {
   next();
 };
 
+const validateOverlayCreatorUser = async (request, response, next) => {
+  const { user } = request;
+  const { id } = request.params;
+
+  const overlay = await overlaysModel.getOverlayById(id);
+
+  if (!overlay) {
+    return response.status(404).json({ message: "overlay not found" });
+  }
+
+  if (overlay.creator_user_id !== user.id) {
+    return response.status(403).json({ message: "access denied" });
+  }
+
+  next();
+};
+
 const validateChannelNameField = async (request, response, next) => {
   const { body } = request;
 
@@ -78,6 +95,7 @@ const validateChannelPictureField = async (request, response, next) => {
 
 export default {
   validatePostBody,
+  validateOverlayCreatorUser,
   validateChannelNameField,
   validateChannelPictureField,
 };

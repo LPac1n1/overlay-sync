@@ -109,7 +109,8 @@ router.put(
 // Delete overlay
 router.delete(
   "/api/overlays/:id",
-  // tokensMiddleware.authToken,
+  tokensMiddleware.authToken,
+  overlaysMiddleware.validateOverlayCreatorUser,
   overlaysController.deleteOverlay
 );
 

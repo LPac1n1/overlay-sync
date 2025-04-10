@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import getCreatedOverlays from "../../../../../services/api/getCreatedOverlays";
 
 import OverlayWidget from "../widgets/OverlayWidget";
@@ -6,13 +7,13 @@ import OverlayWidget from "../widgets/OverlayWidget";
 function MyOverlays() {
   const [overlays, setOverlays] = useState([]);
 
-  useEffect(() => {
-    const getCreatedOverlaysData = async () => {
-      const overlays = await getCreatedOverlays();
-      setOverlays(overlays);
-    };
+  const getOvelays = async () => {
+    const overlays = await getCreatedOverlays();
+    setOverlays(overlays);
+  };
 
-    getCreatedOverlaysData();
+  useEffect(() => {
+    getOvelays();
   }, []);
 
   return (
@@ -23,7 +24,13 @@ function MyOverlays() {
 
       <div className="h-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-flow-row gap-8">
         {overlays.map((overlay) => {
-          return <OverlayWidget key={overlay.id} overlay={overlay} />;
+          return (
+            <OverlayWidget
+              key={overlay.id}
+              overlay={overlay}
+              onOverlayDelete={getOvelays}
+            />
+          );
         })}
       </div>
     </div>

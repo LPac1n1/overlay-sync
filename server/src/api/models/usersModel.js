@@ -10,8 +10,8 @@ const getAllUsers = async () => {
 const getUserByEmail = async (email) => {
   const query = "SELECT * FROM users WHERE email = $1";
 
-  const result = await client.query(query, [email]);
-  return result.rows[0];
+  const user = await client.query(query, [email]);
+  return user.rows[0];
 };
 
 const createUser = async (user) => {

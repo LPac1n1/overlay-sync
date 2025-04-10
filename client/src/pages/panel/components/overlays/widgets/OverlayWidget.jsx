@@ -12,11 +12,13 @@ function OverlayWidget({ overlay, onOverlayDelete }) {
 
   const navigate = useNavigate();
 
-  const excludeOverlay = async (id) => {
-    await deleteOverlay(id);
-    await onOverlayDelete();
-
+  const excludeOverlay = (id) => {
     setIsModalOpen(false);
+
+    setTimeout(async () => {
+      await deleteOverlay(id);
+      await onOverlayDelete();
+    }, 200);
   };
 
   return (

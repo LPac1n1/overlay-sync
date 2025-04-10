@@ -14,6 +14,13 @@ const getOverlayById = async (overlayId) => {
   return overlay.rows[0];
 };
 
+const getOverlayByCanvasRoute = async (canvasRoute) => {
+  const query = "SELECT * FROM overlays WHERE canvas_route = $1";
+
+  const overlay = await client.query(query, [canvasRoute]);
+  return overlay.rows[0];
+};
+
 const getOverlaysByCreatorUserId = async (userId) => {
   const query = "SELECT * FROM overlays WHERE creator_user_id = $1";
 
@@ -76,6 +83,7 @@ const deleteOverlay = async (overlayId) => {
 
 export default {
   getAllOverlays,
+  getOverlayByCanvasRoute,
   getOverlayById,
   getOverlaysByCreatorUserId,
   createOverlay,

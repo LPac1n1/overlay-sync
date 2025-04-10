@@ -5,6 +5,13 @@ const getAllOverlays = async (_request, response) => {
   return response.status(200).json(overlays);
 };
 
+const getOverlayByCanvasRoute = async (request, response) => {
+  const overlay = await overlaysModel.getOverlayByCanvasRoute(
+    request.params.id
+  );
+  return response.status(200).json(overlay);
+};
+
 const getOverlaysByCreatorUserId = async (request, response) => {
   const getedOverlays = await overlaysModel.getOverlaysByCreatorUserId(
     request.user.id
@@ -37,6 +44,7 @@ const deleteOverlay = async (request, response) => {
 
 export default {
   getAllOverlays,
+  getOverlayByCanvasRoute,
   getOverlaysByCreatorUserId,
   createOverlay,
   updateOverlayChannelName,

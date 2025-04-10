@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 
-import getCreatedOverlays from "../../../../../services/api/getCreatedOverlays";
+import getOverlays from "../../../../../services/api/getOverlays";
 
 import OverlayWidget from "../widgets/OverlayWidget";
 
 function MyOverlays() {
   const [overlays, setOverlays] = useState([]);
 
-  const getOvelays = async () => {
-    const overlays = await getCreatedOverlays();
+  const getUserOvelays = async () => {
+    const overlays = await getOverlays();
     setOverlays(overlays);
   };
 
   useEffect(() => {
-    getOvelays();
+    getUserOvelays();
   }, []);
 
   return (
@@ -30,7 +30,7 @@ function MyOverlays() {
                 <OverlayWidget
                   key={overlay.id}
                   overlay={overlay}
-                  onOverlayDelete={getOvelays}
+                  onOverlayDelete={getUserOvelays}
                 />
               );
             })}

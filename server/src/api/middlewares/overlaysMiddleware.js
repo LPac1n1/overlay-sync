@@ -57,6 +57,34 @@ const validateOverlayCreatorUser = async (request, response, next) => {
   next();
 };
 
+const validateOverlayCanvasRoute = async (request, response, next) => {
+  const { id } = request.params;
+
+  const overlays = await overlaysModel.getAllOverlays();
+  const overlaysRoutes = new Set(
+    overlays.map((overlay) => overlay.canvas_route.toString())
+  );
+
+  if (!overlaysRoutes.has(id)) {
+    return response.status(404).json({ message: "canvas not found" });
+  }
+
+  next();
+};
+
+const validateOverlayCanvasAccess = async (request, response, next) => {
+  const { user } = request;
+  const { id } = request.params;
+
+  const overlay = await overlaysModel.getOverlayByCanvasRoute(id);
+
+  if (overlay.creator_user_id !== user.id) {
+    return response.status(404).json({ message: "canvas access denied" });
+  }
+
+  next();
+};
+
 const validateChannelNameField = async (request, response, next) => {
   const { body } = request;
 
@@ -96,6 +124,8 @@ const validateChannelPictureField = async (request, response, next) => {
 export default {
   validatePostBody,
   validateOverlayCreatorUser,
+  validateOverlayCanvasRoute,
+  validateOverlayCanvasAccess,
   validateChannelNameField,
   validateChannelPictureField,
 };

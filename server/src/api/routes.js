@@ -77,9 +77,18 @@ router.get("/api/overlays", overlaysController.getAllOverlays);
 
 // Get user overlays
 router.get(
-  "/api/overlays/created",
+  "/api/overlays/user",
   tokensMiddleware.authToken,
   overlaysController.getOverlaysByCreatorUserId
+);
+
+// Get overlay by canvas route
+router.get(
+  "/api/overlays/canvas/:id",
+  tokensMiddleware.authToken,
+  overlaysMiddleware.validateOverlayCanvasRoute,
+  overlaysMiddleware.validateOverlayCanvasAccess,
+  overlaysController.getOverlayByCanvasRoute
 );
 
 // Create overlay

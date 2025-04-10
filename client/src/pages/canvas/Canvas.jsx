@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+
 import { ImagesProvider } from "../../context/ImagesContext.jsx";
 
 import { motion } from "framer-motion";
@@ -8,7 +10,43 @@ import Editor from "./components/editor/Editor.jsx";
 import Drop from "./components/drop/Drop.jsx";
 import Workspace from "./components/workspace/Workspace.jsx";
 
+import getOverlayCanvas from "../../services/api/getOverlayCanvas.js";
+
+import NotFound from "../../pages/others/NotFound";
+import AccessDenied from "../../pages/others/AccessDenied";
+
 function Canvas() {
+  const [canvas, setCanvas] = useState({});
+  const [notFound, setNotFound] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
+
+  useEffect(() => {
+    const route = window.location.pathname.split("/").pop();
+
+    const getCanvas = async () => {
+      try {
+        const canvas = await getOverlayCanvas(route);
+        setCanvas(canvas);
+      } catch (error) {
+        const { message } = JSON.parse(error.message);
+
+        if (message.includes("not found")) {
+          return setNotFound(true);
+        }
+
+        if (message.includes("access denied")) {
+          return setAccessDenied(true);
+        }
+      }
+    };
+
+    getCanvas();
+  }, [notFound]);
+
+  if (notFound) return <NotFound />;
+  if (accessDenied) return <AccessDenied />;
+  if (!canvas) return null;
+
   return (
     <div className="w-screen h-screen bg-zinc-800 overflow-hidden">
       <motion.div
@@ -18,11 +56,11 @@ function Canvas() {
         transition={{ duration: 0.5 }}
       >
         <ImagesProvider>
-          <Buttons />
+          <Buttons canvas={canvas} />
           <Toolbar />
           <Editor />
           <Drop />
-          <Workspace />
+          <Workspace canvas={canvas} />
         </ImagesProvider>
       </motion.div>
     </div>

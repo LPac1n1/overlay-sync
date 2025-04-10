@@ -15,9 +15,9 @@ function NotFound() {
       >
         <div className="flex flex-col items-center gap-8">
           <div className="flex flex-col items-center">
-            <h2 className="text-2xl text-zinc-400">Erro 404</h2>
+            <h2 className="text-2xl text-zinc-400">Erro 403</h2>
             <h1 className="text-8xl text-center font-semibold leading-tight text-zinc-300">
-              Página não <br /> encontrada :(
+              Acesso negado!
             </h1>
           </div>
 

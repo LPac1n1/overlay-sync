@@ -1,9 +1,12 @@
-const getCreatedOverlays = async () => {
-  const url = "http://localhost:3000/api/overlays/created";
+const getOverlayCanvas = async (route) => {
+  const url = `http://localhost:3000/api/overlays/canvas/${route}`;
 
   const response = await fetch(url, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 
   const json = await response.json();
@@ -20,4 +23,4 @@ const getCreatedOverlays = async () => {
   return json;
 };
 
-export default getCreatedOverlays;
+export default getOverlayCanvas;

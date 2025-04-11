@@ -60,9 +60,9 @@ function Canvas() {
     };
 
     getCanvas();
-  }, [notFound]);
+  }, []);
 
-  if (loading) return null;
+  if (loading) return <div className="w-screen h-screen bg-zinc-800" />;
   if (notFound) return <NotFound />;
   if (accessDenied) return <AccessDenied />;
   if (!canvas) return null;

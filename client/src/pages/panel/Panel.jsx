@@ -25,7 +25,7 @@ function Panel() {
     checkAuth();
   }, [navigate]);
 
-  if (loading) return null;
+  if (loading) return <div className="w-screen h-screen bg-zinc-800" />;
 
   return (
     <div className="w-screen h-screen bg-zinc-800 px-8 overflow-x-hidden">

@@ -15,7 +15,8 @@ const getOverlayById = async (overlayId) => {
 };
 
 const getOverlayByCanvasRoute = async (canvasRoute) => {
-  const query = "SELECT * FROM overlays WHERE canvas_route = $1";
+  const query =
+    "SELECT creator_user_id, stream_key, canvas_route FROM overlays WHERE canvas_route = $1";
 
   const overlay = await client.query(query, [canvasRoute]);
   return overlay.rows[0];

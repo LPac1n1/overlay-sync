@@ -2,6 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import verifyToken from "../../services/api/verifyToken";
+import verifyOverlayRoute from "../../services/api/verifyOverlayRoute.js";
+
+import NotFound from "../../pages/others/NotFound";
+import AccessDenied from "../../pages/others/AccessDenied";
 
 import { io } from "socket.io-client";
 
@@ -44,6 +48,31 @@ function Overlay() {
     checkAuth();
   }, [navigate]);
 
+  const [notFound, setNotFound] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
+
+  useEffect(() => {
+    const route = window.location.pathname.split("/").pop();
+
+    const verifyRoute = async () => {
+      try {
+        await verifyOverlayRoute(route);
+      } catch (error) {
+        const { message } = JSON.parse(error.message);
+
+        if (message.includes("not found")) {
+          return setNotFound(true);
+        }
+
+        if (message.includes("access denied")) {
+          return setAccessDenied(true);
+        }
+      }
+    };
+
+    verifyRoute();
+  }, []);
+
   const socketRef = useRef(null);
   const overlayRef = useRef(null);
   const [images, setImages] = useState([]);
@@ -67,6 +96,8 @@ function Overlay() {
   }, []);
 
   if (loading) return null;
+  if (notFound) return <NotFound />;
+  if (accessDenied) return <AccessDenied />;
 
   return (
     <div

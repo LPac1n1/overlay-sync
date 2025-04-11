@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { LinkIcon, ArrowLeftIcon } from "lucide-react";
 
-function Link() {
+function Buttons({ canvas }) {
   const navigate = useNavigate();
   const buttonRef = useRef(null);
 
@@ -11,12 +11,14 @@ function Link() {
     const button = buttonRef.current;
 
     const copyToClipboard = () => {
-      navigator.clipboard.writeText("http://localhost:5173/overlay/");
+      navigator.clipboard.writeText(
+        `http://localhost:5173/overlay/${canvas.canvas_route}`
+      );
     };
 
     button.addEventListener("click", copyToClipboard);
     return () => button.removeEventListener("click", copyToClipboard);
-  }, []);
+  }, [canvas]);
 
   return (
     <div className="absolute right-8 top-8 flex gap-4">
@@ -41,4 +43,4 @@ function Link() {
   );
 }
 
-export default Link;
+export default Buttons;

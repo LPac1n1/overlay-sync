@@ -5,6 +5,6 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 
-httpServer.listen(PORT, () =>
+httpServer.listen(PORT, "0.0.0.0", () =>
   console.log(`Servidor rodando com API + WebSocket na porta ${PORT}`)
 );

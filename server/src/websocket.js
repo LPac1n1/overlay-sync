@@ -7,22 +7,23 @@ const WebSocketHandler = (io) => {
     const client = { id: socket.id, type: null, socket };
     clients.add(client);
 
-    socket.on("message", (data) => {
+    socket.on("register", (type) => {
+      client.type = type;
+    });
+
+    socket.on("joinRoom", (room) => {
+      socket.join(room);
+      console.log("🔌 Cliente conectado à sala:", room);
+    });
+
+    socket.on("message", ({ room, content }) => {
       try {
-        const parsed = typeof data === "string" ? JSON.parse(data) : data;
-
-        if (parsed.type === "user") {
-          client.type = "user";
-
-          for (const client of clients) {
-            if (client.type === "overlay") {
-              client.socket.emit("message", parsed.content);
+        if (client.type === "user") {
+          for (const c of clients) {
+            if (c.type === "overlay" && c.socket.rooms.has(room)) {
+              c.socket.emit("message", content);
             }
           }
-        }
-
-        if (parsed.type === "overlay") {
-          client.type = "overlay";
         }
       } catch (err) {
         console.error("❌ Erro ao processar mensagem:", err);

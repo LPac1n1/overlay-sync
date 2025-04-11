@@ -16,7 +16,7 @@ function Home() {
         <div className="flex flex-col items-center gap-8">
           <div className="flex flex-col items-center">
             <h4 className="text-2xl text-zinc-400">Bem-vindo ao</h4>
-            <h1 className="text-8xl text-zinc-300">Streamelay</h1>
+            <h1 className="text-8xl text-zinc-300 font-semibold">Streamelay</h1>
           </div>
 
           <div>

@@ -26,7 +26,7 @@ function NotFound() {
               onClick={() => navigate("/")}
               className="text-zinc-400 bg-zinc-900 px-4 py-2 rounded-lg z-10 transition-all hover:bg-zinc-700"
             >
-              Voltar para a página inicial
+              Página inicial
             </button>
           </div>
         </div>

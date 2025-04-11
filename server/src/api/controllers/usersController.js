@@ -1,6 +1,6 @@
 import usersModel from "../models/usersModel.js";
-
 import createToken from "../utils/createToken.js";
+import expireToken from "../utils/expireToken.js";
 
 const getAllUsers = async (_request, response) => {
   const users = await usersModel.getAllUsers();
@@ -20,6 +20,10 @@ const loginUser = async (request, response) => {
 const createUser = async (request, response) => {
   const createdUser = await usersModel.createUser(request.body);
   return createToken(response, 201, createdUser);
+};
+
+const logoutUser = async (_request, response) => {
+  return expireToken(response, 200);
 };
 
 const updateUserName = async (request, response) => {
@@ -47,6 +51,7 @@ export default {
   getUserByEmail,
   loginUser,
   createUser,
+  logoutUser,
   updateUserName,
   updateUserPassword,
   updateUserProfilePicture,

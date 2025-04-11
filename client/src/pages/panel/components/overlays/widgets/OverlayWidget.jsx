@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import Modal from "../../../../../components/Modal";
 
-import deleteOverlay from "../../../../../services/deleteOverlay";
+import deleteOverlay from "../../../../../services/api/deleteOverlay";
 
 import { EllipsisIcon, PlayIcon } from "lucide-react";
 

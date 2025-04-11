@@ -8,6 +8,8 @@ const createToken = (response, status, user) => {
       httpOnly: true,
       secure: false,
       maxAge: 3600000,
+      sameSite: "strict",
+      path: "/",
     })
     .status(status)
     .json({

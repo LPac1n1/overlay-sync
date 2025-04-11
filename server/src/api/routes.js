@@ -39,6 +39,13 @@ router.post(
   usersController.createUser
 );
 
+// Logout user
+router.post(
+  "/api/users/logout",
+  tokensMiddleware.authToken,
+  usersController.logoutUser
+);
+
 // Update user name
 router.put(
   "/api/users/:id/name",

@@ -6,12 +6,12 @@ const verifyToken = async () => {
     credentials: "include",
   });
 
-  if (!response.ok) {
-    console.error("Erro ao verificar token");
-    return false;
-  }
-
   const json = await response.json();
+
+  if (!response.ok) {
+    console.error("token verification failed");
+    return json.authenticated;
+  }
 
   return json.authenticated;
 };

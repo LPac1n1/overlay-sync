@@ -1,4 +1,5 @@
 import overlaysModel from "../models/overlaysModel.js";
+import overlayUsersModel from "../models/overlayUsersModel.js";
 
 const validatePostBody = async (request, response, next) => {
   const { body } = request;
@@ -78,7 +79,17 @@ const validateOverlayCanvasAccess = async (request, response, next) => {
 
   const overlay = await overlaysModel.getOverlayByCanvasRoute(id);
 
-  if (overlay.creator_user_id !== user.id) {
+  const overlayUsers = await overlayUsersModel.getOverlayUsersByOverlayId(
+    overlay.id
+  );
+  const overlayUsersIds = new Set(
+    overlayUsers.map((overlayUser) => overlayUser.user_id)
+  );
+
+  const isOwner = overlay.creator_user_id === user.id;
+  const isInvited = overlayUsersIds.has(user.id);
+
+  if (!isOwner && !isInvited) {
     return response.status(404).json({ message: "canvas access denied" });
   }
 

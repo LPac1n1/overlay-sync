@@ -6,6 +6,8 @@ import overlaysController from "./controllers/overlaysController.js";
 import overlaysMiddleware from "./middlewares/overlaysMiddleware.js";
 import tokensController from "./controllers/tokensController.js";
 import tokensMiddleware from "./middlewares/tokensMiddleware.js";
+import invitesController from "./controllers/invitesController.js";
+import invitesMiddleware from "./middlewares/invitesMiddleware.js";
 
 const router = express.Router();
 
@@ -86,7 +88,7 @@ router.get("/api/overlays", overlaysController.getAllOverlays);
 router.get(
   "/api/overlays/user",
   tokensMiddleware.authToken,
-  overlaysController.getOverlaysByCreatorUserId
+  overlaysController.getOverlaysByUserId
 );
 
 // Get overlay by canvas route
@@ -128,6 +130,32 @@ router.delete(
   tokensMiddleware.authToken,
   overlaysMiddleware.validateOverlayCreatorUser,
   overlaysController.deleteOverlay
+);
+
+// INVITES ROUTES
+
+// Get all invites
+router.get("/api/invites", invitesController.getAllInvites);
+
+// Get all overlay users
+router.get("/api/invites/overlay/", invitesController.getAllOverlaysUsers);
+
+// Create invite
+router.post(
+  "/api/invites",
+  tokensMiddleware.authToken,
+  invitesMiddleware.validateInvitePostBody,
+  invitesController.createInvite
+);
+
+// Use invite
+router.post(
+  "/api/invites/use",
+  tokensMiddleware.authToken,
+  invitesMiddleware.validateInviteToken,
+  invitesMiddleware.validateInviteOverlay,
+  invitesMiddleware.validateUnlinkWithOverlay,
+  invitesController.useInvite
 );
 
 export default router;

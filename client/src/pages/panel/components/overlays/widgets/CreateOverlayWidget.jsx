@@ -25,6 +25,7 @@ function CreateOverlayWidget() {
     register,
     handleSubmit,
     formState: { errors },
+    clearErrors,
   } = useForm({
     resolver: zodResolver(channelNameFormSchema),
   });
@@ -60,9 +61,15 @@ function CreateOverlayWidget() {
         </div>
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          clearErrors("channel_name");
+        }}
+      >
         <form noValidate onSubmit={handleSubmit(onSubmit)} className="w-full">
-          <div className="flex flex-col items-center gap-8">
+          <div className="flex flex-col items-center gap-6">
             <div className="w-full flex flex-col gap-4">
               <div className="text-center flex flex-col gap-2">
                 <p className="text-lg text-zinc-400">Nome do canal</p>

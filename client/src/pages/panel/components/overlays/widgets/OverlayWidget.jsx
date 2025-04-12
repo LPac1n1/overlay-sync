@@ -1,19 +1,67 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Modal from "../../../../../components/Modal";
+import { v4 as uuid } from "uuid";
 
+import {
+  EllipsisIcon,
+  SendIcon,
+  Trash2Icon,
+  CircleCheckBigIcon,
+  PlayIcon,
+} from "lucide-react";
+
+import Modal from "../../../../../components/Modal";
+import Popover from "../../../../../components/Popover";
+
+import createInvite from "../../../../../services/api/createInvite";
 import deleteOverlay from "../../../../../services/api/deleteOverlay";
 
-import { EllipsisIcon, PlayIcon } from "lucide-react";
-
 function OverlayWidget({ overlay, onOverlayDelete }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const [isInviteCreated, setIsInviteCreated] = useState(false);
+  const inviteInput = useRef(null);
+  const inviteButton = useRef(null);
 
   const navigate = useNavigate();
 
+  const generateInvite = async () => {
+    try {
+      inviteButton.current.disabled = true;
+      inviteButton.current.classList.remove("hover:bg-emerald-500");
+
+      const invite_token = uuid();
+      const invite = await createInvite({
+        invite_token,
+        overlay_id: overlay.id,
+      });
+      inviteInput.current.value = invite.token;
+
+      setIsInviteCreated(true);
+    } catch (error) {
+      const { message } = JSON.parse(error.message);
+
+      if (message.includes("permission denied")) {
+        setIsInviteCreated(false);
+      }
+    }
+  };
+
+  const onCloseInviteModal = () => {
+    setIsInviteModalOpen(false);
+    setIsInviteCreated(false);
+
+    setTimeout(() => {
+      inviteButton.current.disabled = false;
+      inviteButton.current.classList.add("hover:bg-emerald-500");
+      inviteInput.current.value = "";
+    }, 200);
+  };
+
   const excludeOverlay = (id) => {
-    setIsModalOpen(false);
+    setIsDeleteModalOpen(false);
 
     setTimeout(async () => {
       await deleteOverlay(id);
@@ -21,15 +69,31 @@ function OverlayWidget({ overlay, onOverlayDelete }) {
     }, 200);
   };
 
+  const content = (
+    <div className="flex flex-col">
+      <button
+        onClick={() => setIsInviteModalOpen(true)}
+        className="text-zinc-400 text-sm flex items-center gap-2 border-b-2 border-zinc-900 p-4 transition-all hover:bg-zinc-700"
+      >
+        <SendIcon className="w-4 h-4 text-emerald-500" /> <p>Convite</p>
+      </button>
+      <button
+        onClick={() => setIsDeleteModalOpen(true)}
+        className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-zinc-700"
+      >
+        <Trash2Icon className="w-4 h-4 text-rose-500" /> <p>Excluir</p>
+      </button>
+    </div>
+  );
+
   return (
     <div>
       <div className="relative max-w-full min-h-72 md:max-w-80 bg-zinc-900 border-2 border-zinc-950/25 rounded-2xl flex flex-col justify-center items-center overflow-hidden">
-        <div
-          onClick={() => setIsModalOpen(true)}
-          className="absolute top-4 right-6 z-20 hover:cursor-pointer"
-        >
-          <EllipsisIcon className="text-zinc-400"></EllipsisIcon>
-        </div>
+        <Popover content={content}>
+          <div className="absolute top-4 right-6 z-20 hover:cursor-pointer">
+            <EllipsisIcon className="text-zinc-400"></EllipsisIcon>
+          </div>
+        </Popover>
 
         <div className="absolute top-0 w-full h-3/4 bg-zinc-950 flex justify-center items-center overflow-hidden z-10">
           <div className="absolute w-full h-full bg-gradient-to-b from-transparent from-10% via-zinc-900/80 to-zinc-900 z-10" />
@@ -78,9 +142,73 @@ function OverlayWidget({ overlay, onOverlayDelete }) {
         </div>
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Modal isOpen={isInviteModalOpen} onClose={onCloseInviteModal}>
         <div className="text-center">
-          <div className="space-y-8">
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <h4 className="text-2xl text-zinc-300">Convidar um amigo</h4>
+              <p className="text-lg text-zinc-400">
+                Clique no botão para gerar um convite.
+              </p>
+            </div>
+
+            <div className="flex">
+              <input
+                ref={inviteInput}
+                disabled
+                type="text"
+                placeholder="Código de convite"
+                className={`w-full h-10 bg-zinc-700 text-zinc-400 placeholder:text-zinc-500 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 ${
+                  isInviteCreated ? "rounded-s-lg" : "rounded-lg"
+                } px-2 py-2`}
+              />
+              {isInviteCreated && (
+                <input
+                  onClick={(event) => {
+                    navigator.clipboard.writeText(
+                      event.target.parentNode.firstChild.value
+                    );
+                  }}
+                  type="button"
+                  value="Copiar"
+                  className="h-10 bg-zinc-700 text-zinc-400 outline-none rounded-e-lg px-2 py-2 transition-all hover:bg-zinc-600 hover:cursor-pointer"
+                />
+              )}
+            </div>
+
+            <div className="flex justify-center items-center flex-wrap gap-4">
+              <button
+                onClick={onCloseInviteModal}
+                className="text-zinc-400 bg-zinc-800/50 backdrop-blur-sm px-4 py-2 rounded-lg transition-all hover:bg-zinc-700/50"
+              >
+                {isInviteCreated ? "Fechar" : "Cancelar"}
+              </button>
+
+              <button
+                ref={inviteButton}
+                onClick={() => {
+                  generateInvite();
+                  setIsInviteCreated(true);
+                }}
+                className="text-zinc-300 bg-emerald-600 backdrop-blur-sm px-4 py-2 rounded-lg transition-all hover:bg-emerald-500"
+              >
+                {isInviteCreated ? (
+                  <CircleCheckBigIcon className="text-emerald-900" />
+                ) : (
+                  "Gerar convite"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+      >
+        <div className="text-center">
+          <div className="space-y-6">
             <div className="space-y-2">
               <h4 className="text-2xl text-zinc-300">Tem certeza?</h4>
               <p className="text-lg text-zinc-400">
@@ -88,9 +216,9 @@ function OverlayWidget({ overlay, onOverlayDelete }) {
               </p>
             </div>
 
-            <div className="space-x-4">
+            <div className="flex justify-center items-center flex-wrap gap-4">
               <button
-                onClick={() => setIsModalOpen(false)}
+                onClick={() => setIsDeleteModalOpen(false)}
                 className="text-zinc-400 bg-zinc-800/50 backdrop-blur-sm px-4 py-2 rounded-lg transition-all hover:bg-zinc-700/50"
               >
                 Cancelar

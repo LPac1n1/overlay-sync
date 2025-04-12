@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from "framer-motion";
 function Modal({ isOpen, onClose, children }) {
   const [show, setShow] = useState(false);
 
-  const modalOverlayRef = useRef(null);
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -34,7 +33,6 @@ function Modal({ isOpen, onClose, children }) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           id="modal-overlay"
-          ref={modalOverlayRef}
           onClick={HandleOutClick}
           className={`absolute left-0 top-0 w-screen h-screen flex justify-center items-center bg-zinc-900/50 backdrop-blur-sm z-50 overflow-hidden`}
         >

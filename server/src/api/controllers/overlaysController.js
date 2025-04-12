@@ -1,4 +1,5 @@
 import overlaysModel from "../models/overlaysModel.js";
+import overlayUsersModel from "../models/overlayUsersModel.js";
 
 const getAllOverlays = async (_request, response) => {
   const overlays = await overlaysModel.getAllOverlays();
@@ -12,10 +13,22 @@ const getOverlayByCanvasRoute = async (request, response) => {
   return response.status(200).json(overlay);
 };
 
-const getOverlaysByCreatorUserId = async (request, response) => {
-  const getedOverlays = await overlaysModel.getOverlaysByCreatorUserId(
+const getOverlaysByUserId = async (request, response) => {
+  const createdOverlays = await overlaysModel.getOverlaysByCreatorUserId(
     request.user.id
   );
+
+  const userInvitedOverlays = await overlayUsersModel.getOverlaysByUserId(
+    request.user.id
+  );
+
+  const invitedOverlays = await Promise.all(
+    userInvitedOverlays.map((overlay) =>
+      overlaysModel.getOverlayById(overlay.overlay_id)
+    )
+  );
+
+  const getedOverlays = { createdOverlays, invitedOverlays };
   return response.status(200).json(getedOverlays);
 };
 
@@ -45,7 +58,7 @@ const deleteOverlay = async (request, response) => {
 export default {
   getAllOverlays,
   getOverlayByCanvasRoute,
-  getOverlaysByCreatorUserId,
+  getOverlaysByUserId,
   createOverlay,
   updateOverlayChannelName,
   updateOverlayChannelPicture,

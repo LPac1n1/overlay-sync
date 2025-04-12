@@ -1,11 +1,86 @@
 import { useState } from "react";
 
+import { KeyRoundIcon } from "lucide-react";
+
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import applyInvite from "../../../../../services/api/applyInvite.js";
+
 import Modal from "../../../../../components/Modal.jsx";
 
-import { KeyRoundIcon } from "lucide-react";
+const inviteFormSchema = z.object({
+  invite: z.string().min(1, "O convite não pode ser vazio"),
+});
 
 function JoinOverlayWidget() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    clearErrors,
+    reset,
+  } = useForm({
+    resolver: zodResolver(inviteFormSchema),
+  });
+
+  const onSubmit = async (inviteToken) => {
+    try {
+      const invite_token = inviteToken.invite;
+      await applyInvite({ invite_token });
+
+      onModalClose();
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    } catch (error) {
+      try {
+        const { message } = JSON.parse(error.message);
+
+        if (message.includes("token does not exist")) {
+          return setError("invite", {
+            type: "custom",
+            message: "Este token não existe",
+          });
+        }
+
+        if (message.includes("overlay does not exist")) {
+          return setError("invite", {
+            type: "custom",
+            message: "Esta overlay não existe mais",
+          });
+        }
+
+        if (message.includes("already own this overlay")) {
+          return setError("invite", {
+            type: "custom",
+            message: "Você já está nessa overlay",
+          });
+        }
+        return setError("invite", {
+          type: "custom",
+          message: "Erro ao usar o convite",
+        });
+      } catch {
+        setError("invite", {
+          type: "custom",
+          message: "Erro inesperado",
+        });
+      }
+    }
+  };
+
+  const onModalClose = () => {
+    setIsModalOpen(false);
+    clearErrors("invite");
+    setTimeout(() => {
+      reset();
+    }, 200);
+  };
 
   return (
     <div className="col-span-1">
@@ -18,23 +93,26 @@ function JoinOverlayWidget() {
         </div>
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <form className="w-full">
-          <div className="flex flex-col items-center gap-8">
+      <Modal isOpen={isModalOpen} onClose={onModalClose}>
+        <form noValidate onSubmit={handleSubmit(onSubmit)} className="w-full">
+          <div className="flex flex-col items-center gap-6">
             <div className="w-full flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <p className="text-lg text-zinc-400">Link da overlay</p>
+              <div className="text-center flex flex-col gap-2">
+                <p className="text-lg text-zinc-400">Código de convite</p>
                 <input
                   type="text"
-                  autoComplete="off"
                   className="w-full h-12 bg-zinc-700 text-zinc-400 placeholder:text-zinc-500 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
+                  {...register("invite")}
                 />
+                {errors.invite && (
+                  <span className="text-rose-500">{errors.invite.message}</span>
+                )}
               </div>
             </div>
             <div>
               <input
-                type="button"
-                value="Entrar na overlay"
+                type="submit"
+                value="Utilizar"
                 className="text-zinc-400 bg-zinc-900 px-4 py-2 rounded-lg z-10 transition-all hover:bg-zinc-700 hover:cursor-pointer"
               />
             </div>

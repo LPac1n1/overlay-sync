@@ -5,10 +5,6 @@ import { io } from "socket.io-client";
 
 function Player() {
   const socketRef = useRef(null);
-  const playerRef = useRef();
-
-  const { images } = useContext(ImagesContext);
-  const [imagesOverPlayer, setImagesOverPlayer] = useState(new Set());
 
   useEffect(() => {
     socketRef.current = io("http://localhost:3000");
@@ -20,12 +16,24 @@ function Player() {
     const route = window.location.pathname.split("/").pop();
     socketRef.current.emit("joinRoom", route);
 
+    socketRef.current.on("message", (data) => {
+      const playerData = data.playerData;
+      const imagesData = data.imagesData;
+
+      console.log(playerData, imagesData);
+    });
+
     return () => {
       if (socketRef.current) {
         socketRef.current.disconnect();
       }
     };
   }, []);
+
+  const playerRef = useRef();
+
+  const { images } = useContext(ImagesContext);
+  const [imagesOverPlayer, setImagesOverPlayer] = useState(new Set());
 
   useEffect(() => {
     if (!playerRef.current) return;

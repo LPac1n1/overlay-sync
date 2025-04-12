@@ -20,7 +20,7 @@ const WebSocketHandler = (io) => {
       try {
         if (client.type === "user") {
           for (const c of clients) {
-            if (c.type === "overlay" && c.socket.rooms.has(room)) {
+            if (c.socket.id !== client.id && c.socket.rooms.has(room)) {
               c.socket.emit("message", content);
             }
           }

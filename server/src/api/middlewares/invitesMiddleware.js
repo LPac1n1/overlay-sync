@@ -49,20 +49,11 @@ const validateInviteToken = async (request, response, next) => {
   next();
 };
 
-const validateInviteOverlay = async (request, response, next) => {
+const validateInviteOverlay = async (request, _response, next) => {
   const { invite_token } = request.body;
-
-  const overlays = await overlaysModel.getAllOverlays();
-  const overlaysIds = new Set(overlays.map((overlay) => overlay.id));
 
   const invites = await invitesModel.getAllInvites();
   const invite = invites.find((invite) => invite.invite_token === invite_token);
-
-  if (!overlaysIds.has(invite.overlay_id)) {
-    return response.status(400).json({
-      message: "overlay does not exist anymore",
-    });
-  }
 
   request.overlay = { id: invite.overlay_id };
 

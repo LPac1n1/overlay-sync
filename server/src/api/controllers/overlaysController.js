@@ -23,9 +23,11 @@ const getOverlaysByUserId = async (request, response) => {
   );
 
   const invitedOverlays = await Promise.all(
-    userInvitedOverlays.map((overlay) =>
-      overlaysModel.getOverlayById(overlay.overlay_id)
-    )
+    userInvitedOverlays.map(async (bond) => {
+      const overlay = await overlaysModel.getOverlayById(bond.overlay_id);
+      const role = bond.role;
+      return { overlay, role };
+    })
   );
 
   const getedOverlays = { createdOverlays, invitedOverlays };

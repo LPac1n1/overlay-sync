@@ -29,9 +29,18 @@ const addOverlayUser = async (userId, overlayId) => {
   return { bondId };
 };
 
+const deleteOverlayUser = async (userId, overlayId) => {
+  const query =
+    "DELETE FROM overlay_users WHERE user_id = $1 AND overlay_id = $2";
+  const bond = await client.query(query, [userId, overlayId]);
+
+  return bond.rows;
+};
+
 export default {
   getAllOverlaysUsers,
   getOverlaysByUserId,
   getOverlayUsersByOverlayId,
   addOverlayUser,
+  deleteOverlayUser,
 };

@@ -1,11 +1,13 @@
 import express from "express";
 
+import tokensController from "./controllers/tokensController.js";
+import tokensMiddleware from "./middlewares/tokensMiddleware.js";
 import usersController from "./controllers/usersController.js";
 import usersMiddleware from "./middlewares/usersMiddleware.js";
 import overlaysController from "./controllers/overlaysController.js";
 import overlaysMiddleware from "./middlewares/overlaysMiddleware.js";
-import tokensController from "./controllers/tokensController.js";
-import tokensMiddleware from "./middlewares/tokensMiddleware.js";
+import overlayUsersController from "./controllers/overlayUsersController.js";
+import overlayUsersMiddleware from "./middlewares/overlayUsersMiddleware.js";
 import invitesController from "./controllers/invitesController.js";
 import invitesMiddleware from "./middlewares/invitesMiddleware.js";
 
@@ -130,6 +132,13 @@ router.delete(
   tokensMiddleware.authToken,
   overlaysMiddleware.validateOverlayCreatorUser,
   overlaysController.deleteOverlay
+);
+
+router.delete(
+  "/api/overlays/leave/:id",
+  tokensMiddleware.authToken,
+  overlayUsersMiddleware.validateOverlayBond,
+  overlayUsersController.leaveOverlay
 );
 
 // INVITES ROUTES

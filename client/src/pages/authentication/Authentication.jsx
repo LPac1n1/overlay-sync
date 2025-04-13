@@ -26,7 +26,7 @@ function Authentication() {
     checkAuth();
   }, [navigate]);
 
-  if (loading) return null;
+  if (loading) return <div className="w-screen h-screen bg-zinc-800"></div>;
 
   return (
     <div className="w-screen h-screen bg-zinc-800">

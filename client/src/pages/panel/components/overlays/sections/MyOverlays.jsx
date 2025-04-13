@@ -33,7 +33,8 @@ function MyOverlays() {
                 <OverlayWidget
                   key={overlay.id}
                   overlay={overlay}
-                  onOverlayDelete={getUserOvelays}
+                  overlayRole={"creator"}
+                  onOverlaysChange={getUserOvelays}
                 />
               );
             })}
@@ -51,9 +52,10 @@ function MyOverlays() {
             {invitedOverlays.map((overlay) => {
               return (
                 <OverlayWidget
-                  key={overlay.id}
-                  overlay={overlay}
-                  onOverlayDelete={getUserOvelays}
+                  key={overlay.overlay.id}
+                  overlay={overlay.overlay}
+                  overlayRole={overlay.role}
+                  onOverlaysChange={getUserOvelays}
                 />
               );
             })}

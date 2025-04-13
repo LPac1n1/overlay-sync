@@ -7,6 +7,7 @@ import {
   EllipsisIcon,
   SendIcon,
   Trash2Icon,
+  DoorOpenIcon,
   CircleCheckBigIcon,
   PlayIcon,
 } from "lucide-react";
@@ -16,10 +17,12 @@ import Popover from "../../../../../components/Popover";
 
 import createInvite from "../../../../../services/api/createInvite";
 import deleteOverlay from "../../../../../services/api/deleteOverlay";
+import leaveOverlay from "../../../../../services/api/leaveOverlay";
 
-function OverlayWidget({ overlay, onOverlayDelete }) {
+function OverlayWidget({ overlay, overlayRole, onOverlaysChange }) {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
 
   const [isInviteCreated, setIsInviteCreated] = useState(false);
   const inviteInput = useRef(null);
@@ -60,31 +63,79 @@ function OverlayWidget({ overlay, onOverlayDelete }) {
     }, 200);
   };
 
-  const excludeOverlay = (id) => {
+  const onCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
+  };
+
+  const onCloseLeaveModal = () => {
+    setIsLeaveModalOpen(false);
+  };
+
+  const excludeOverlay = (id) => {
+    onCloseDeleteModal();
 
     setTimeout(async () => {
       await deleteOverlay(id);
-      await onOverlayDelete();
+      await onOverlaysChange();
     }, 200);
   };
 
-  const content = (
-    <div className="flex flex-col">
-      <button
-        onClick={() => setIsInviteModalOpen(true)}
-        className="text-zinc-400 text-sm flex items-center gap-2 border-b-2 border-zinc-900 p-4 transition-all hover:bg-zinc-700"
-      >
-        <SendIcon className="w-4 h-4 text-emerald-500" /> <p>Convite</p>
-      </button>
-      <button
-        onClick={() => setIsDeleteModalOpen(true)}
-        className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-zinc-700"
-      >
-        <Trash2Icon className="w-4 h-4 text-rose-500" /> <p>Excluir</p>
-      </button>
-    </div>
-  );
+  const exitOverlay = (id) => {
+    onCloseLeaveModal();
+
+    setTimeout(async () => {
+      await leaveOverlay(id);
+      await onOverlaysChange();
+    }, 200);
+  };
+
+  const content =
+    overlayRole === "creator" ? (
+      <div className="flex flex-col">
+        <button
+          onClick={() => setIsInviteModalOpen(true)}
+          className="text-zinc-400 text-sm flex items-center gap-2 border-b-2 border-zinc-900 p-4 transition-all hover:bg-zinc-700"
+        >
+          <SendIcon className="w-4 h-4 text-emerald-500" /> <p>Convite</p>
+        </button>
+        <button
+          onClick={() => setIsDeleteModalOpen(true)}
+          className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-zinc-700"
+        >
+          <Trash2Icon className="w-4 h-4 text-red-500" /> <p>Excluir</p>
+        </button>
+      </div>
+    ) : overlayRole === "admin" ? (
+      <div className="flex flex-col">
+        <button
+          onClick={() => setIsInviteModalOpen(true)}
+          className="text-zinc-400 text-sm flex items-center gap-2 border-b-2 border-zinc-900 p-4 transition-all hover:bg-zinc-700"
+        >
+          <SendIcon className="w-4 h-4 text-emerald-500" /> <p>Convite</p>
+        </button>
+        <button
+          onClick={() => setIsDeleteModalOpen(true)}
+          className="text-zinc-400 text-sm flex items-center gap-2 border-b-2 border-zinc-900 p-4 transition-all hover:bg-zinc-700"
+        >
+          <Trash2Icon className="w-4 h-4 text-red-500" /> <p>Excluir</p>
+        </button>
+        <button
+          onClick={() => setIsLeaveModalOpen(true)}
+          className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-zinc-700"
+        >
+          <DoorOpenIcon className="w-4 h-4 text-rose-500" /> <p>Sair</p>
+        </button>
+      </div>
+    ) : (
+      <div className="flex flex-col">
+        <button
+          onClick={() => setIsLeaveModalOpen(true)}
+          className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-zinc-700"
+        >
+          <DoorOpenIcon className="w-4 h-4 text-rose-500" /> <p>Sair</p>
+        </button>
+      </div>
+    );
 
   return (
     <div>
@@ -145,10 +196,10 @@ function OverlayWidget({ overlay, onOverlayDelete }) {
       <Modal isOpen={isInviteModalOpen} onClose={onCloseInviteModal}>
         <div className="text-center">
           <div className="space-y-6">
-            <div className="space-y-2">
+            <div className="space-y-4">
               <h4 className="text-2xl text-zinc-300">Convidar um amigo</h4>
               <p className="text-lg text-zinc-400">
-                Clique no botão para gerar um convite.
+                Clique no botão para gerar um código de convite.
               </p>
             </div>
 
@@ -203,13 +254,10 @@ function OverlayWidget({ overlay, onOverlayDelete }) {
         </div>
       </Modal>
 
-      <Modal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-      >
+      <Modal isOpen={isDeleteModalOpen} onClose={onCloseDeleteModal}>
         <div className="text-center">
           <div className="space-y-6">
-            <div className="space-y-2">
+            <div className="space-y-4">
               <h4 className="text-2xl text-zinc-300">Tem certeza?</h4>
               <p className="text-lg text-zinc-400">
                 Você ira excluir a overlay para sempre.
@@ -218,7 +266,7 @@ function OverlayWidget({ overlay, onOverlayDelete }) {
 
             <div className="flex justify-center items-center flex-wrap gap-4">
               <button
-                onClick={() => setIsDeleteModalOpen(false)}
+                onClick={onCloseDeleteModal}
                 className="text-zinc-400 bg-zinc-800/50 backdrop-blur-sm px-4 py-2 rounded-lg transition-all hover:bg-zinc-700/50"
               >
                 Cancelar
@@ -229,6 +277,38 @@ function OverlayWidget({ overlay, onOverlayDelete }) {
                 className="text-zinc-300 bg-rose-600 backdrop-blur-sm px-4 py-2 rounded-lg transition-all hover:bg-rose-500"
               >
                 Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal isOpen={isLeaveModalOpen} onClose={onCloseLeaveModal}>
+        <div className="text-center">
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <h4 className="text-2xl text-zinc-300">
+                Tem certeza que deseja sair?
+              </h4>
+              <p className="text-lg text-zinc-400">
+                Você não poderá participar mais da overlay até que seja
+                convidado novamente.
+              </p>
+            </div>
+
+            <div className="flex justify-center items-center flex-wrap gap-4">
+              <button
+                onClick={onCloseLeaveModal}
+                className="text-zinc-400 bg-zinc-800/50 backdrop-blur-sm px-4 py-2 rounded-lg transition-all hover:bg-zinc-700/50"
+              >
+                Cancelar
+              </button>
+
+              <button
+                onClick={() => exitOverlay(overlay.id)}
+                className="text-zinc-300 bg-rose-600 backdrop-blur-sm px-4 py-2 rounded-lg transition-all hover:bg-rose-500"
+              >
+                Sair
               </button>
             </div>
           </div>

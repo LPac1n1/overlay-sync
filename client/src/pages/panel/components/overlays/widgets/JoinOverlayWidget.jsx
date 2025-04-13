@@ -11,7 +11,7 @@ import applyInvite from "../../../../../services/api/applyInvite.js";
 import Modal from "../../../../../components/Modal.jsx";
 
 const inviteFormSchema = z.object({
-  invite: z.string().min(1, "O convite não pode ser vazio"),
+  invite: z.string().min(1, "O código de convite não pode ser vazio"),
 });
 
 function JoinOverlayWidget() {
@@ -44,14 +44,7 @@ function JoinOverlayWidget() {
         if (message.includes("token does not exist")) {
           return setError("invite", {
             type: "custom",
-            message: "Este token não existe",
-          });
-        }
-
-        if (message.includes("overlay does not exist")) {
-          return setError("invite", {
-            type: "custom",
-            message: "Esta overlay não existe mais",
+            message: "Código inexistente, usado ou expirado",
           });
         }
 
@@ -61,6 +54,7 @@ function JoinOverlayWidget() {
             message: "Você já está nessa overlay",
           });
         }
+
         return setError("invite", {
           type: "custom",
           message: "Erro ao usar o convite",

@@ -23,6 +23,20 @@ function Modal({ isOpen, onClose, children }) {
     }
   };
 
+  useEffect(() => {
+    const handleEscKey = (e) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscKey);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscKey);
+    };
+  }, [onClose]);
+
   if (!show) return null;
 
   return (

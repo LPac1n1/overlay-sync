@@ -1,14 +1,14 @@
 import { useState } from "react";
 
-import { KeyRoundIcon } from "lucide-react";
-
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { TicketsIcon } from "lucide-react";
 
 import applyInvite from "../../../../../services/api/applyInvite.js";
 
 import Modal from "../../../../../components/Modal.jsx";
+
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const inviteFormSchema = z.object({
   invite: z.string().min(1, "O código de convite não pode ser vazio"),
@@ -80,26 +80,25 @@ function JoinOverlayWidget({ reloadOverlays }) {
         className="max-w-full min-h-72 md:max-w-80 bg-zinc-900/50 border-2 border-zinc-600/25 rounded-2xl flex justify-center items-center transition-all hover:bg-zinc-700/50 hover:cursor-pointer"
       >
         <div>
-          <KeyRoundIcon className="w-10 h-10 text-zinc-600" />
+          <TicketsIcon className="w-10 h-10 text-zinc-600" />
         </div>
       </div>
 
       <Modal isOpen={isModalOpen} onClose={onModalClose}>
         <form noValidate onSubmit={handleSubmit(onSubmit)} className="w-full">
           <div className="flex flex-col items-center gap-6">
-            <div className="w-full flex flex-col gap-4">
-              <div className="text-center flex flex-col gap-2">
-                <p className="text-lg text-zinc-400">Código de convite</p>
-                <input
-                  type="text"
-                  className="w-full h-12 bg-zinc-700 text-zinc-400 placeholder:text-zinc-500 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
-                  {...register("invite")}
-                />
-                {errors.invite && (
-                  <span className="text-rose-500">{errors.invite.message}</span>
-                )}
-              </div>
+            <div className="w-full text-center flex flex-col gap-4">
+              <p className="text-lg text-zinc-400">Código de convite</p>
+              <input
+                type="text"
+                className="w-full h-12 bg-zinc-700 text-zinc-400 placeholder:text-zinc-500 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
+                {...register("invite")}
+              />
+              {errors.invite && (
+                <span className="text-rose-500">{errors.invite.message}</span>
+              )}
             </div>
+
             <div>
               <input
                 type="submit"

@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import {
   EllipsisIcon,
-  SendIcon,
+  TicketIcon,
   Trash2Icon,
   DoorOpenIcon,
   CircleCheckBigIcon,
@@ -60,11 +60,13 @@ function OverlayWidget({ overlay, overlayRole, onOverlaysChange }) {
     setIsInviteModalOpen(false);
     setIsInviteCreated(false);
 
-    setTimeout(() => {
-      inviteButton.current.disabled = false;
-      inviteButton.current.classList.add("hover:bg-emerald-500");
-      inviteInput.current.value = "";
-    }, 200);
+    if (inviteButton.current && inviteInput.current) {
+      setTimeout(() => {
+        inviteButton.current.disabled = false;
+        inviteButton.current.classList.add("hover:bg-emerald-500");
+        inviteInput.current.value = "";
+      }, 200);
+    }
   };
 
   const onCloseDeleteModal = () => {
@@ -102,7 +104,7 @@ function OverlayWidget({ overlay, overlayRole, onOverlaysChange }) {
           onClick={() => setIsInviteModalOpen(true)}
           className="text-zinc-400 text-sm flex items-center gap-2 border-b-2 border-zinc-900 p-4 transition-all hover:bg-zinc-700"
         >
-          <SendIcon className="w-4 h-4 text-emerald-500" /> <p>Convite</p>
+          <TicketIcon className="w-4 h-4 text-emerald-500" /> <p>Convite</p>
         </button>
         <button
           onClick={() => setIsDeleteModalOpen(true)}
@@ -117,7 +119,7 @@ function OverlayWidget({ overlay, overlayRole, onOverlaysChange }) {
           onClick={() => setIsInviteModalOpen(true)}
           className="text-zinc-400 text-sm flex items-center gap-2 border-b-2 border-zinc-900 p-4 transition-all hover:bg-zinc-700"
         >
-          <SendIcon className="w-4 h-4 text-emerald-500" /> <p>Convite</p>
+          <TicketIcon className="w-4 h-4 text-emerald-500" /> <p>Convite</p>
         </button>
         <button
           onClick={() => setIsDeleteModalOpen(true)}

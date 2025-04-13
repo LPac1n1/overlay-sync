@@ -73,23 +73,22 @@ function CreateOverlayWidget({ reloadOverlays }) {
       <Modal isOpen={isModalOpen} onClose={onModalClose}>
         <form noValidate onSubmit={handleSubmit(onSubmit)} className="w-full">
           <div className="flex flex-col items-center gap-6">
-            <div className="w-full flex flex-col gap-4">
-              <div className="text-center flex flex-col gap-2">
-                <p className="text-lg text-zinc-400">Nome do canal</p>
-                <input
-                  id="channel-name-input"
-                  type="text"
-                  autoComplete="off"
-                  className="w-full h-12 bg-zinc-700 text-zinc-400 placeholder:text-zinc-500 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
-                  {...register("channel_name")}
-                />
-                {errors.channel_name && (
-                  <span className="text-rose-500">
-                    {errors.channel_name.message}
-                  </span>
-                )}
-              </div>
+            <div className="w-full text-center flex flex-col gap-4">
+              <p className="text-lg text-zinc-400">Nome do canal</p>
+              <input
+                id="channel-name-input"
+                type="text"
+                autoComplete="off"
+                className="w-full h-12 bg-zinc-700 text-zinc-400 placeholder:text-zinc-500 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
+                {...register("channel_name")}
+              />
+              {errors.channel_name && (
+                <span className="text-rose-500">
+                  {errors.channel_name.message}
+                </span>
+              )}
             </div>
+
             <div>
               <input
                 type="submit"

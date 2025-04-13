@@ -7,6 +7,13 @@ const getAllUsers = async () => {
   return users.rows;
 };
 
+const getUserById = async (userId) => {
+  const query = "SELECT * FROM users WHERE id = $1";
+
+  const user = await client.query(query, [userId]);
+  return user.rows[0];
+};
+
 const getUserByEmail = async (email) => {
   const query = "SELECT * FROM users WHERE email = $1";
 
@@ -65,6 +72,7 @@ const deleteUser = async (userId) => {
 
 export default {
   getAllUsers,
+  getUserById,
   getUserByEmail,
   createUser,
   updateUserName,

@@ -11,7 +11,7 @@ function Home() {
         className="w-full h-full flex justify-center items-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.2 }}
       >
         <div className="flex flex-col items-center gap-8">
           <div className="flex flex-col items-center">

@@ -1,5 +1,5 @@
 const LeaveOverlay = async (id) => {
-  const url = `http://localhost:3000/api/overlays/leave/${id}`;
+  const url = `http://localhost:3000/api/overlays/${id}/leave`;
 
   const response = await fetch(url, {
     method: "DELETE",

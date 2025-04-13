@@ -1,5 +1,5 @@
-const getOverlayCanvas = async (route) => {
-  const url = `http://localhost:3000/api/overlays/canvas/${route}`;
+const getOverlayUsers = async (id) => {
+  const url = `http://localhost:3000/api/overlays/${id}/users`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -20,4 +20,4 @@ const getOverlayCanvas = async (route) => {
   return json;
 };
 
-export default getOverlayCanvas;
+export default getOverlayUsers;

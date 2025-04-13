@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { v4 as uuid } from "uuid";
@@ -12,6 +12,7 @@ import {
   DoorOpenIcon,
   CircleCheckBigIcon,
   PlayIcon,
+  UserRoundIcon,
 } from "lucide-react";
 
 import Modal from "../../../../../components/Modal";
@@ -21,8 +22,11 @@ import createInvite from "../../../../../services/api/createInvite";
 import deleteOverlay from "../../../../../services/api/deleteOverlay";
 import leaveOverlay from "../../../../../services/api/leaveOverlay";
 
+import getOverlayUsers from "../../../../../services/api/getOverlayUsers";
+
 function OverlayWidget({ overlay, overlayRole, onOverlaysChange }) {
   const [show, setShow] = useState(true);
+  const [overlayUsers, setOverlayUsers] = useState([]);
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -33,6 +37,20 @@ function OverlayWidget({ overlay, overlayRole, onOverlaysChange }) {
   const inviteButton = useRef(null);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const users = await getOverlayUsers(overlay.id);
+        return setOverlayUsers(users);
+      } catch (error) {
+        const { message } = JSON.parse(error.message);
+        console.error(message);
+      }
+    };
+
+    getUsers();
+  }, [overlay.id]);
 
   const generateInvite = async () => {
     try {
@@ -185,26 +203,43 @@ function OverlayWidget({ overlay, overlayRole, onOverlaysChange }) {
                 Ir para o canvas
               </button>
 
-              {/* <div className="flex justify-center items-center">
-            <div className="w-10 h-10 bg-rose-500 flex justify-center items-center rounded-full overflow-hidden">
-              <UserRoundIcon className="w-6 h-6 text-zinc-800" />
-            </div>
-            <div className="w-10 h-10 bg-blue-500 flex justify-center items-center rounded-full -ml-4 overflow-hidden">
-              <UserRoundIcon className="w-6 h-6 text-zinc-800" />
-            </div>
-            <div className="w-10 h-10 bg-orange-500 flex justify-center items-center rounded-full -ml-4 overflow-hidden">
-              <UserRoundIcon className="w-6 h-6 text-zinc-800" />
-            </div>
-            <div className="w-10 h-10 bg-yellow-500 flex justify-center items-center rounded-full -ml-4 overflow-hidden">
-              <UserRoundIcon className="w-6 h-6 text-zinc-800" />
-            </div>
-            <div className="w-10 h-10 bg-green-500 flex justify-center items-center rounded-full -ml-4 overflow-hidden">
-              <UserRoundIcon className="w-6 h-6 text-zinc-800" />
-            </div>
-            <div className="relative w-10 h-10 flex justify-center items-center rounded-full overflow-hidden">
-              <p className="absolute text-2xl text-zinc-300 z-10">+1</p>
-            </div>
-          </div> */}
+              {overlayUsers.length > 1 && (
+                <div className="flex justify-center items-center">
+                  {overlayUsers.map((user, index) => {
+                    if (user.user_picture !== null) {
+                      if (index < 1) {
+                        return (
+                          <div
+                            key={user.id}
+                            className="w-8 h-8 bg-zinc-500 flex justify-center items-center rounded-full overflow-hidden"
+                          >
+                            <UserRoundIcon className="w-4 h-4 text-zinc-900" />
+                          </div>
+                        );
+                      }
+
+                      if (index >= 1 && index < 8) {
+                        return (
+                          <div
+                            key={user.id}
+                            className="w-8 h-8 bg-zinc-500 flex justify-center items-center rounded-full -ml-4 overflow-hidden"
+                          >
+                            <UserRoundIcon className="w-4 h-4 text-zinc-900" />
+                          </div>
+                        );
+                      }
+
+                      if (index === 9) {
+                        <div className="relative w-8 h-8 flex justify-center items-center rounded-full overflow-hidden">
+                          <p className="absolute text-xl text-zinc-300 z-10">
+                            +{overlayUsers.length - 9}
+                          </p>
+                        </div>;
+                      }
+                    }
+                  })}
+                </div>
+              )}
             </div>
           </motion.div>
         )}

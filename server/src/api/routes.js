@@ -134,8 +134,17 @@ router.delete(
   overlaysController.deleteOverlay
 );
 
+// OVERLAY USERS ROUTES
+
+// Get overlay users
+router.get(
+  "/api/overlays/:id/users",
+  tokensMiddleware.authToken,
+  overlayUsersController.getOverlayUsersByOverlayId
+);
+
 router.delete(
-  "/api/overlays/leave/:id",
+  "/api/overlays/:id/leave",
   tokensMiddleware.authToken,
   overlayUsersMiddleware.validateOverlayBond,
   overlayUsersController.leaveOverlay

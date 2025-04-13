@@ -9,7 +9,6 @@ const verifyToken = async () => {
   const json = await response.json();
 
   if (!response.ok) {
-    console.error("token verification failed");
     return json.authenticated;
   }
 

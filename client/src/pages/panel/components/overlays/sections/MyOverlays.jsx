@@ -4,7 +4,7 @@ import getOverlays from "../../../../../services/api/getOverlays";
 
 import OverlayWidget from "../widgets/OverlayWidget";
 
-function MyOverlays() {
+function MyOverlays({ reloadOverlays }) {
   const [createdOverlays, setCreatedOverlays] = useState([]);
   const [invitedOverlays, setInvitedOverlays] = useState([]);
 
@@ -17,7 +17,7 @@ function MyOverlays() {
 
   useEffect(() => {
     getUserOvelays();
-  }, []);
+  }, [reloadOverlays]);
 
   return (
     <div className="flex flex-col gap-8">

@@ -14,7 +14,7 @@ const inviteFormSchema = z.object({
   invite: z.string().min(1, "O código de convite não pode ser vazio"),
 });
 
-function JoinOverlayWidget() {
+function JoinOverlayWidget({ reloadOverlays }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
@@ -32,11 +32,8 @@ function JoinOverlayWidget() {
     try {
       const invite_token = inviteToken.invite;
       await applyInvite({ invite_token });
-
       onModalClose();
-      setTimeout(() => {
-        window.location.reload();
-      }, 300);
+      reloadOverlays();
     } catch (error) {
       try {
         const { message } = JSON.parse(error.message);

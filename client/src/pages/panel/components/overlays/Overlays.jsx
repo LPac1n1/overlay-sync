@@ -1,7 +1,15 @@
+import { useState } from "react";
+
 import Options from "./sections/Options";
 import MyOverlays from "./sections/MyOverlays";
 
 function PanelOverlays() {
+  const [reloadOverlays, setReloadOverlays] = useState(false);
+
+  const handleReloadOverlays = () => {
+    setReloadOverlays((prev) => !prev);
+  };
+
   return (
     <div className="max-w-7xl py-8 mx-auto">
       <div className="w-full flex flex-col gap-4 mb-8">
@@ -12,8 +20,8 @@ function PanelOverlays() {
       </div>
 
       <div className="flex flex-col gap-8">
-        <Options />
-        <MyOverlays />
+        <Options reloadOverlays={handleReloadOverlays} />
+        <MyOverlays reloadOverlays={reloadOverlays} />
       </div>
     </div>
   );

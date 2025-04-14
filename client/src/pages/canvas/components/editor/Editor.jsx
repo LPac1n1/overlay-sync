@@ -35,13 +35,6 @@ function Editor() {
   const onEditorDrop = (event) => {
     event.preventDefault();
 
-    const { clientX, clientY } = event;
-    event.target.style.pointerEvents = "none";
-    const behindElement = document.elementFromPoint(clientX, clientY);
-    event.target.style.pointerEvents = "auto";
-
-    if (behindElement.id !== "drop-area") return;
-
     const files = Array.from(event.dataTransfer.files);
     files.forEach((file) => {
       if (!file.type.startsWith("image")) {

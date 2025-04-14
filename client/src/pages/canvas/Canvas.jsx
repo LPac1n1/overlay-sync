@@ -12,9 +12,8 @@ import NotFound from "../../pages/others/NotFound";
 import AccessDenied from "../../pages/others/AccessDenied";
 
 import Buttons from "./components/buttons/Buttons.jsx";
-// import Toolbar from "./components/toolbar/Toolbar.jsx";
+import Toolbar from "./components/toolbar/Toolbar.jsx";
 import Editor from "./components/editor/Editor.jsx";
-import Drop from "./components/drop/Drop.jsx";
 import Workspace from "./components/workspace/Workspace.jsx";
 
 function Canvas() {
@@ -77,9 +76,8 @@ function Canvas() {
       >
         <ImagesProvider>
           <Buttons canvas={canvas} />
-          {/* <Toolbar /> */}
+          <Toolbar />
           <Editor />
-          <Drop />
           <Workspace canvas={canvas} />
         </ImagesProvider>
       </motion.div>

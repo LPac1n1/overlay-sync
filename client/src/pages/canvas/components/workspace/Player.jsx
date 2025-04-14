@@ -108,7 +108,7 @@ function Player() {
   return (
     <div
       ref={playerRef}
-      className="w-full max-w-[960px] aspect-[16/9] flex justify-center items-center mx-32 bg-zinc-900"
+      className="w-full max-w-[960px] aspect-[16/9] flex justify-center items-center mx-32 bg-zinc-900 z-10"
     ></div>
   );
 }

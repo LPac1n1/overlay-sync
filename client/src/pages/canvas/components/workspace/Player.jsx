@@ -140,7 +140,6 @@ function Player({ streamKey }) {
     >
       <video
         ref={videoRef}
-        controls
         autoPlay
         muted
         className={`w-full h-full transition-opacity duration-300 ${

@@ -1,5 +1,5 @@
 import BackButton from "./backButton";
-import StreamKeyButton from "./streamKeyButton";
+import StreamKeyButton from "./StreamKeyButton";
 import OverlayLinkButton from "./overlayLinkButton";
 import SettingsButton from "./SettingsButton";
 

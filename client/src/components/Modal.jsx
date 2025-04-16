@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-
+// Modal.js
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 function Modal({ isOpen, onClose, children }) {
   const [show, setShow] = useState(false);
-
-  const modalRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -17,7 +16,7 @@ function Modal({ isOpen, onClose, children }) {
     }
   }, [isOpen]);
 
-  const HandleOutClick = (e) => {
+  const handleOutClick = (e) => {
     if (e.target.id === "modal-overlay") {
       onClose();
     }
@@ -25,21 +24,15 @@ function Modal({ isOpen, onClose, children }) {
 
   useEffect(() => {
     const handleEscKey = (e) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
+      if (e.key === "Escape") onClose();
     };
-
     document.addEventListener("keydown", handleEscKey);
-
-    return () => {
-      document.removeEventListener("keydown", handleEscKey);
-    };
+    return () => document.removeEventListener("keydown", handleEscKey);
   }, [onClose]);
 
   if (!show) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
@@ -47,21 +40,21 @@ function Modal({ isOpen, onClose, children }) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           id="modal-overlay"
-          onClick={HandleOutClick}
-          className={`absolute left-0 top-0 w-screen h-screen flex justify-center items-center bg-zinc-900/50 backdrop-blur-sm z-50 overflow-hidden`}
+          onClick={handleOutClick}
+          className="fixed left-0 top-0 w-screen h-screen flex justify-center items-center bg-zinc-900/50 backdrop-blur-sm z-50 overflow-hidden"
         >
           <motion.div
             initial={{ scale: 0.95 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0.95 }}
-            ref={modalRef}
-            className={`w-1/4 bg-zinc-800 rounded-2xl p-8`}
+            className="w-1/4 bg-zinc-800 rounded-2xl p-8"
           >
             {children}
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
 

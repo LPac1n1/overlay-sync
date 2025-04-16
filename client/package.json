@@ -12,6 +12,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
     "framer-motion": "^12.6.3",
+    "hls.js": "^1.6.2",
     "lucide-react": "^0.483.0",
     "nanoid": "^5.1.5",
     "react": "^18.3.1",

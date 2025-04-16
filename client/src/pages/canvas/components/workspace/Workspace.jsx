@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 import Player from "./Player";
 
-function Workspace() {
+function Workspace({ canvas }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ function Workspace() {
         ref={canvasRef}
         style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}
       />
-      <Player />
+      <Player streamKey={canvas.stream_key} />
     </div>
   );
 }

@@ -3,7 +3,9 @@ import { ImagesContext } from "../../../../context/ImagesContext";
 
 import { io } from "socket.io-client";
 
-function Player() {
+import Hls from "hls.js";
+
+function Player({ streamKey }) {
   const socketRef = useRef(null);
 
   useEffect(() => {
@@ -105,11 +107,51 @@ function Player() {
     });
   }, [imagesOverPlayer]);
 
+  const videoRef = useRef(null);
+  const [isStreamReady, setIsStreamReady] = useState(false);
+
+  useEffect(() => {
+    let hls;
+    const video = videoRef.current;
+
+    if (Hls.isSupported() && video) {
+      hls = new Hls();
+      hls.loadSource(`http://localhost:8080/hls/${streamKey}.m3u8`);
+      hls.attachMedia(video);
+
+      setIsStreamReady(true);
+
+      hls.on(Hls.Events.ERROR, (_event, data) => {
+        if (data.fatal) {
+          setIsStreamReady(false);
+        }
+      });
+    }
+
+    return () => {
+      if (hls) hls.destroy();
+    };
+  }, [streamKey]);
+
   return (
     <div
       ref={playerRef}
       className="w-full max-w-[960px] aspect-[16/9] flex justify-center items-center mx-32 bg-zinc-900 z-10"
-    ></div>
+    >
+      <video
+        ref={videoRef}
+        controls
+        autoPlay
+        muted
+        className={`w-full h-full transition-opacity duration-300 ${
+          isStreamReady ? "opacity-100" : "opacity-0"
+        }`}
+      />
+
+      {!isStreamReady && (
+        <div className="absolute text-zinc-400">Stream offline.</div>
+      )}
+    </div>
   );
 }
 

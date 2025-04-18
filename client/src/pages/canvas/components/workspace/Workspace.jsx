@@ -45,10 +45,7 @@ function Workspace({ canvas }) {
 
   return (
     <div className="w-full h-full flex justify-center items-center pointer-events-none">
-      <canvas
-        ref={canvasRef}
-        style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}
-      />
+      <canvas ref={canvasRef} className="absolute left-0 top-0" />
       <Player streamKey={canvas.stream_key} />
     </div>
   );

@@ -90,7 +90,7 @@ const validateOverlayCanvasAccess = async (request, response, next) => {
   const isInvited = overlayUsersIds.has(user.id);
 
   if (!isOwner && !isInvited) {
-    return response.status(404).json({ message: "canvas access denied" });
+    return response.status(403).json({ message: "canvas access denied" });
   }
 
   next();

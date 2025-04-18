@@ -8,10 +8,6 @@ const verifyToken = async () => {
 
   const json = await response.json();
 
-  if (!response.ok) {
-    return json.authenticated;
-  }
-
   return json.authenticated;
 };
 

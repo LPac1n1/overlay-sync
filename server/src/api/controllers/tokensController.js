@@ -8,7 +8,7 @@ const verifyToken = (request, response) => {
   const token = request.cookies.token;
 
   if (!token) {
-    return response.status(401).json({ authenticated: false });
+    return response.status(206).json({ authenticated: false });
   }
 
   try {

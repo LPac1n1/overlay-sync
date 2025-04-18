@@ -81,7 +81,7 @@ function Editor() {
       onDragOver={(event) => event.preventDefault(event)}
       onDrop={(event) => onEditorDrop(event)}
       id="editor"
-      className="absolute w-screen h-screen z-40"
+      className="absolute w-screen h-full z-40"
     >
       <Images />
     </div>

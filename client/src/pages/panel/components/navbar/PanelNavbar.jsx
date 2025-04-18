@@ -1,6 +1,6 @@
 import { BringToFrontIcon, UserRoundIcon } from "lucide-react";
 
-import logoutUser from "../../../../services/api/logoutUser";
+import logoutUser from "../../../../services/api/logoutUser.js";
 
 function PanelNavbar() {
   const logout = async () => {

@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 import { ImagesProvider } from "../../context/ImagesContext.jsx";
 
-import { motion } from "framer-motion";
-
 import verifyToken from "../../services/api/verifyToken.js";
 import getOverlayCanvas from "../../services/api/getOverlayCanvas.js";
 
+import Layout from "../../layout/Layout";
+import LoadingPage from "../../layout/LoadingPage";
 import NotFound from "../../pages/others/NotFound";
 import AccessDenied from "../../pages/others/AccessDenied";
 
@@ -20,68 +20,45 @@ function Canvas() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const isLogged = await verifyToken();
-        isLogged ? setLoading(false) : navigate("/authentication");
-      } catch (error) {
-        console.error(error);
-        navigate("/authentication");
-      }
-    };
-
-    checkAuth();
-  }, [navigate]);
-
   const [canvas, setCanvas] = useState({});
   const [notFound, setNotFound] = useState(false);
   const [accessDenied, setAccessDenied] = useState(false);
 
   useEffect(() => {
-    const route = window.location.pathname.split("/").pop();
+    const checkAuthAndLoadCanvas = async () => {
+      const isAuthenticated = await verifyToken();
+      if (!isAuthenticated) return navigate("/authentication");
 
-    const getCanvas = async () => {
+      const route = window.location.pathname.split("/").pop();
+
       try {
         const canvas = await getOverlayCanvas(route);
         setCanvas(canvas);
       } catch (error) {
         const { message } = JSON.parse(error.message);
-
-        if (message.includes("not found")) {
-          return setNotFound(true);
-        }
-
-        if (message.includes("access denied")) {
-          return setAccessDenied(true);
-        }
+        if (message.includes("not found")) return setNotFound(true);
+        if (message.includes("access denied")) return setAccessDenied(true);
+      } finally {
+        setLoading(false);
       }
     };
 
-    getCanvas();
-  }, []);
+    checkAuthAndLoadCanvas();
+  }, [navigate]);
 
-  if (loading) return <div className="w-screen h-screen bg-zinc-800" />;
   if (notFound) return <NotFound />;
   if (accessDenied) return <AccessDenied />;
-  if (!canvas) return null;
+  if (loading) return <LoadingPage />;
 
   return (
-    <div className="w-screen h-screen bg-zinc-800 overflow-hidden">
-      <motion.div
-        className="w-full h-full relative flex items-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.2 }}
-      >
-        <ImagesProvider>
-          <Buttons canvas={canvas} />
-          <Toolbar />
-          <Editor />
-          <Workspace canvas={canvas} />
-        </ImagesProvider>
-      </motion.div>
-    </div>
+    <Layout isLoading={loading} classes={"relative h-full"}>
+      <ImagesProvider>
+        <Buttons canvas={canvas} />
+        <Toolbar />
+        <Editor />
+        <Workspace canvas={canvas} />
+      </ImagesProvider>
+    </Layout>
   );
 }
 

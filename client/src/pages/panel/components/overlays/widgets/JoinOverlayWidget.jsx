@@ -28,6 +28,14 @@ function JoinOverlayWidget({ reloadOverlays }) {
     resolver: zodResolver(inviteFormSchema),
   });
 
+  const onModalClose = () => {
+    setIsModalOpen(false);
+    clearErrors("invite");
+    setTimeout(() => {
+      reset();
+    }, 200);
+  };
+
   const onSubmit = async (inviteToken) => {
     try {
       const invite_token = inviteToken.invite;
@@ -35,42 +43,27 @@ function JoinOverlayWidget({ reloadOverlays }) {
       onModalClose();
       reloadOverlays();
     } catch (error) {
-      try {
-        const { message } = JSON.parse(error.message);
+      const { message } = JSON.parse(error.message);
 
-        if (message.includes("token does not exist")) {
-          return setError("invite", {
-            type: "custom",
-            message: "Código inexistente, usado ou expirado",
-          });
-        }
-
-        if (message.includes("already own this overlay")) {
-          return setError("invite", {
-            type: "custom",
-            message: "Você já está nessa overlay",
-          });
-        }
-
+      if (message.includes("token does not exist")) {
         return setError("invite", {
           type: "custom",
-          message: "Erro ao usar o convite",
-        });
-      } catch {
-        setError("invite", {
-          type: "custom",
-          message: "Erro inesperado",
+          message: "Código inexistente, usado ou expirado",
         });
       }
-    }
-  };
 
-  const onModalClose = () => {
-    setIsModalOpen(false);
-    clearErrors("invite");
-    setTimeout(() => {
-      reset();
-    }, 200);
+      if (message.includes("already own this overlay")) {
+        return setError("invite", {
+          type: "custom",
+          message: "Você já está nessa overlay",
+        });
+      }
+
+      return setError("invite", {
+        type: "custom",
+        message: "Erro ao usar o convite",
+      });
+    }
   };
 
   return (

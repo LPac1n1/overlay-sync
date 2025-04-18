@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import getOverlays from "../../../../../services/api/getOverlays";
+import getOverlays from "../../../../../services/api/getOverlays.js";
 
 import OverlayWidget from "../widgets/OverlayWidget";
 
@@ -27,7 +27,7 @@ function MyOverlays({ reloadOverlays }) {
             <p className="text-lg text-zinc-500">Minhas overlays</p>
           </div>
 
-          <div className="h-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-flow-row gap-8">
+          <div className="h-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 grid-flow-row gap-8">
             {createdOverlays.map((overlay) => {
               return (
                 <OverlayWidget

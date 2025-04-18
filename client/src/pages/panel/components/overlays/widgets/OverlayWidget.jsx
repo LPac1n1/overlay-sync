@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { v4 as uuid } from "uuid";
-
 import { motion, AnimatePresence } from "framer-motion";
+
+import { v4 as uuid } from "uuid";
 
 import {
   EllipsisIcon,
@@ -15,14 +15,14 @@ import {
   UserRoundIcon,
 } from "lucide-react";
 
-import Modal from "../../../../../components/Modal";
-import Popover from "../../../../../components/Popover";
-
 import createInvite from "../../../../../services/api/createInvite";
 import deleteOverlay from "../../../../../services/api/deleteOverlay";
 import leaveOverlay from "../../../../../services/api/leaveOverlay";
 
 import getOverlayUsers from "../../../../../services/api/getOverlayUsers";
+
+import Modal from "../../../../../components/Modal";
+import Popover from "../../../../../components/Popover";
 
 function OverlayWidget({ overlay, overlayRole, onOverlaysChange }) {
   const [show, setShow] = useState(true);

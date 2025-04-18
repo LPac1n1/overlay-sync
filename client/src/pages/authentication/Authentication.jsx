@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 
 import verifyToken from "../../services/api/verifyToken.js";
 
-import Login from "./components/Login.jsx";
-import Register from "./components/Register.jsx";
-import Swap from "./components/Swap.jsx";
+import Layout from "../../layout/Layout";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import Swap from "./components/Swap";
 
 function Authentication() {
   const navigate = useNavigate();
@@ -14,33 +14,22 @@ function Authentication() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        const isLogged = await verifyToken();
-        isLogged ? navigate("/panel") : setLoading(false);
-      } catch (error) {
-        console.error(error);
-        navigate("/authentication");
-      }
+      const isAuthenticated = await verifyToken();
+      isAuthenticated ? navigate("/panel") : setLoading(false);
     };
 
     checkAuth();
   }, [navigate]);
 
-  if (loading) return <div className="w-screen h-screen bg-zinc-800"></div>;
-
   return (
-    <div className="w-screen h-screen bg-zinc-800">
-      <motion.div
-        className="w-full h-full relative flex justify-center items-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.2 }}
-      >
-        <Login />
-        <Register />
-        <Swap />
-      </motion.div>
-    </div>
+    <Layout
+      isLoading={loading}
+      classes={"h-full flex justify-center items-center"}
+    >
+      <Login />
+      <Register />
+      <Swap />
+    </Layout>
   );
 }
 

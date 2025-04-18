@@ -30,6 +30,14 @@ function CreateOverlayWidget({ reloadOverlays }) {
     resolver: zodResolver(channelNameFormSchema),
   });
 
+  const onModalClose = () => {
+    setIsModalOpen(false);
+    clearErrors("channel_name");
+    setTimeout(() => {
+      reset();
+    }, 200);
+  };
+
   const onSubmit = async (name) => {
     const { channel_name } = name;
     const stream_key = generateStreamKey();
@@ -49,14 +57,6 @@ function CreateOverlayWidget({ reloadOverlays }) {
     } catch (error) {
       console.error(error.message);
     }
-  };
-
-  const onModalClose = () => {
-    setIsModalOpen(false);
-    clearErrors("channel_name");
-    setTimeout(() => {
-      reset();
-    }, 200);
   };
 
   return (

@@ -8,10 +8,10 @@ function Layout({ isLoading = false, classes, children }) {
   return (
     <div className="w-screen h-screen bg-zinc-800 overflow-x-hidden">
       <motion.div
-        className={`w-full ${classes}`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.25 }}
+        className={`w-full ${classes}`}
       >
         {children}
       </motion.div>

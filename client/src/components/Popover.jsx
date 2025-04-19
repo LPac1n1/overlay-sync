@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-function Popover({ children, content }) {
+function Popover({ children, content, distance }) {
   const [open, setOpen] = useState(false);
 
   const popoverRef = useRef(null);
@@ -32,7 +32,7 @@ function Popover({ children, content }) {
   return (
     <div onClick={togglePopover}>
       <div ref={popoverButtonRef}>
-        <div>{children}</div>
+        <div className="relative z-20">{children}</div>
       </div>
       <AnimatePresence>
         {open && (
@@ -42,7 +42,9 @@ function Popover({ children, content }) {
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.2 }}
             ref={popoverRef}
-            className="absolute top-10 right-6 max-w-32 text-zinc-300 bg-zinc-800 rounded-lg z-40 overflow-hidden"
+            className={`absolute ${
+              distance && distance
+            } right-0 text-zinc-300 bg-zinc-900 rounded-lg whitespace-nowrap z-40 overflow-hidden`}
           >
             {content}
           </motion.div>

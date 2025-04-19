@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import {
   BringToFrontIcon,
   UserRoundIcon,
-  SettingsIcon,
+  LayoutPanelLeftIcon,
   DoorOpenIcon,
 } from "lucide-react";
 
-import logoutUser from "../../../../services/api/logoutUser.js";
+import logoutUser from "../../../services/api/logoutUser.js";
 
-import Popover from "../../../../components/Popover.jsx";
+import Popover from "../../../components/Popover.jsx";
 
 function PanelNavbar() {
   const navigate = useNavigate();
@@ -21,10 +21,10 @@ function PanelNavbar() {
   const content = (
     <div className="flex flex-col">
       <button
-        onClick={() => navigate("/account")}
-        className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-slate-200/15"
+        onClick={() => navigate("/panel")}
+        className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-blue-200/15"
       >
-        <SettingsIcon className="w-4 h-4 text-slate-500" /> <p>Configurações</p>
+        <LayoutPanelLeftIcon className="w-4 h-4 text-blue-500" /> <p>Painel</p>
       </button>
       <button
         onClick={logout}
@@ -37,7 +37,7 @@ function PanelNavbar() {
   );
 
   return (
-    <nav className="max-w-7xl h-auto flex justify-between items-center gap-4 mx-auto">
+    <nav className="w-full max-w-7xl h-auto flex justify-between items-center gap-4 mx-auto mb-8">
       <div className="w-10 h-10 flex justify-start items-center">
         <BringToFrontIcon className="w-full h-full text-zinc-200 stroke-1" />
       </div>

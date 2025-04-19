@@ -6,6 +6,7 @@ import verifyToken from "../../services/api/verifyToken.js";
 import Layout from "../../layout/Layout";
 import PanelNavbar from "./components/navbar/PanelNavbar";
 import Overlays from "./components/overlays/Overlays";
+import LoadingPage from "../../layout/LoadingPage";
 
 function Panel() {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ function Panel() {
     checkAuth();
   }, [navigate]);
 
-  if (loading) return <div className="w-screen h-screen bg-zinc-800" />;
+  if (loading) return <LoadingPage />;
 
   return (
     <Layout isLoading={loading} classes={"p-8"}>

@@ -120,13 +120,13 @@ function OverlayWidget({ overlay, overlayRole, onOverlaysChange }) {
       <div className="flex flex-col">
         <button
           onClick={() => setIsInviteModalOpen(true)}
-          className="text-zinc-400 text-sm flex items-center gap-2 border-b-2 border-zinc-900 p-4 transition-all hover:bg-zinc-700"
+          className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-emerald-200/15"
         >
           <TicketIcon className="w-4 h-4 text-emerald-500" /> <p>Convite</p>
         </button>
         <button
           onClick={() => setIsDeleteModalOpen(true)}
-          className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-zinc-700"
+          className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-red-200/15"
         >
           <Trash2Icon className="w-4 h-4 text-red-500" /> <p>Excluir</p>
         </button>
@@ -135,19 +135,19 @@ function OverlayWidget({ overlay, overlayRole, onOverlaysChange }) {
       <div className="flex flex-col">
         <button
           onClick={() => setIsInviteModalOpen(true)}
-          className="text-zinc-400 text-sm flex items-center gap-2 border-b-2 border-zinc-900 p-4 transition-all hover:bg-zinc-700"
+          className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-emerald-200/15"
         >
           <TicketIcon className="w-4 h-4 text-emerald-500" /> <p>Convite</p>
         </button>
         <button
           onClick={() => setIsDeleteModalOpen(true)}
-          className="text-zinc-400 text-sm flex items-center gap-2 border-b-2 border-zinc-900 p-4 transition-all hover:bg-zinc-700"
+          className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-red-200/15"
         >
           <Trash2Icon className="w-4 h-4 text-red-500" /> <p>Excluir</p>
         </button>
         <button
           onClick={() => setIsLeaveModalOpen(true)}
-          className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-zinc-700"
+          className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-rose-200/15"
         >
           <DoorOpenIcon className="w-4 h-4 text-rose-500" /> <p>Sair</p>
         </button>
@@ -156,7 +156,7 @@ function OverlayWidget({ overlay, overlayRole, onOverlaysChange }) {
       <div className="flex flex-col">
         <button
           onClick={() => setIsLeaveModalOpen(true)}
-          className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-zinc-700"
+          className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-rose-200/15"
         >
           <DoorOpenIcon className="w-4 h-4 text-rose-500" /> <p>Sair</p>
         </button>
@@ -173,11 +173,13 @@ function OverlayWidget({ overlay, overlayRole, onOverlaysChange }) {
             exit={{ opacity: 0, scale: 0.95 }}
             className="relative max-w-full min-h-72 md:max-w-80 bg-zinc-900 border-2 border-zinc-950/25 rounded-2xl flex flex-col justify-center items-center overflow-hidden"
           >
-            <Popover content={content}>
-              <div className="absolute top-4 right-6 z-20 hover:cursor-pointer">
-                <EllipsisIcon className="text-zinc-400"></EllipsisIcon>
-              </div>
-            </Popover>
+            <div className="absolute top-4 right-6">
+              <Popover content={content}>
+                <div className="z-20 hover:cursor-pointer">
+                  <EllipsisIcon className="text-zinc-400"></EllipsisIcon>
+                </div>
+              </Popover>
+            </div>
 
             <div className="absolute top-0 w-full h-3/4 bg-zinc-950 flex justify-center items-center overflow-hidden z-10">
               <div className="absolute w-full h-full bg-gradient-to-b from-transparent from-10% via-zinc-900/80 to-zinc-900 z-10" />

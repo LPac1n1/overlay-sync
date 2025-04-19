@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import verifyToken from "../../services/api/verifyToken";
 
 import Layout from "../../layout/Layout";
-import AccountNavbar from "./components/AccountNavbar";
-import AccountSidebar from "./components/AccountSidebar";
-import AccountMain from "./components/AccountMain";
+import SettingsNavbar from "./components/SettingsNavbar";
+import SettingsSidebar from "./components/SettingsSidebar";
+import SettingsMain from "./components/SeetingsMain";
 import LoadingPage from "../../layout/LoadingPage";
 
 function Account() {
@@ -33,13 +33,13 @@ function Account() {
 
   return (
     <Layout classes={"flex flex-col text-zinc-400 p-8"}>
-      <AccountNavbar />
+      <SettingsNavbar />
       <div className="w-full max-w-7xl h-full flex gap-8 mx-auto">
-        <AccountSidebar
+        <SettingsSidebar
           selectedSection={selectedSection}
           setSelectedSection={setSelectedSection}
         />
-        <AccountMain selectedSection={selectedSection} />
+        <SettingsMain selectedSection={selectedSection} />
       </div>
     </Layout>
   );

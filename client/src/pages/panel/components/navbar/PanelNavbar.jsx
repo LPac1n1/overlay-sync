@@ -21,7 +21,7 @@ function PanelNavbar() {
   const content = (
     <div className="flex flex-col">
       <button
-        onClick={() => navigate("/account")}
+        onClick={() => navigate("/settings")}
         className="text-zinc-400 text-sm flex items-center gap-2 p-4 transition-all hover:bg-slate-200/15"
       >
         <SettingsIcon className="w-4 h-4 text-slate-500" /> <p>Configurações</p>

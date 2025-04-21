@@ -1,10 +1,4 @@
-import {
-  UserIcon,
-  BrushIcon,
-  LockKeyholeIcon,
-  BringToFrontIcon,
-  DoorOpenIcon,
-} from "lucide-react";
+import { UserIcon, BrushIcon, LockKeyholeIcon } from "lucide-react";
 
 function AccountSidebar({ selectedSection, setSelectedSection }) {
   const setSelected = (event) => {
@@ -70,22 +64,6 @@ function AccountSidebar({ selectedSection, setSelectedSection }) {
               }`}
             />
             Senha
-          </li>
-          <li
-            onClick={setSelected}
-            className={`group flex items-center gap-2 hover:cursor-pointer hover:text-zinc-200 transition-all ${
-              selectedSection === "overlays" && "text-zinc-200"
-            }`}
-            data-section="overlays"
-          >
-            <BringToFrontIcon
-              className={`w-4 h-4 group-hover:text-zinc-400 transition-all pointer-events-none ${
-                selectedSection === "overlays"
-                  ? "text-zinc-400"
-                  : "text-zinc-500"
-              }`}
-            />
-            Overlays
           </li>
         </div>
       </ul>

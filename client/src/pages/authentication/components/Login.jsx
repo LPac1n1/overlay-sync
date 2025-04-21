@@ -81,7 +81,10 @@ function Login() {
                   autoComplete="off"
                   className="w-full h-12 bg-zinc-700 text-zinc-400 placeholder:text-zinc-500 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
                   {...register("email")}
-                  onInput={() => clearErrors("email")}
+                  onInput={() => {
+                    clearErrors("email");
+                    clearErrors("login");
+                  }}
                 />
                 {errors.email && (
                   <span className="text-rose-500">{errors.email.message}</span>
@@ -97,7 +100,10 @@ function Login() {
                     autoComplete="off"
                     className="w-full h-12 bg-zinc-700 text-zinc-400 placeholder:text-zinc-500 outline-none border-2 border-zinc-600/25 focus:border-zinc-600 rounded-lg px-4 py-2"
                     {...register("password")}
-                    onInput={() => clearErrors("password")}
+                    onInput={() => {
+                      clearErrors("email");
+                      clearErrors("login");
+                    }}
                   />
                   <div
                     ref={eyeClosedRef}

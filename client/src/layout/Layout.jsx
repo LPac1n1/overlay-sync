@@ -11,7 +11,7 @@ function Layout({ isLoading = false, classes, children }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.25 }}
-        className={`w-full ${classes}`}
+        className={`w-full h-full ${classes}`}
       >
         {children}
       </motion.div>

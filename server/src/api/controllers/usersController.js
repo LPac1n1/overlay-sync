@@ -7,6 +7,11 @@ const getAllUsers = async (_request, response) => {
   return response.status(200).json(users);
 };
 
+const getUserById = async (request, response) => {
+  const user = await usersModel.getUserById(request.user.id);
+  return response.status(200).json(user);
+};
+
 const getUserByEmail = async (request, response) => {
   const getedUser = await usersModel.getUserByEmail(request.body);
   return response.status(200).json(getedUser);
@@ -43,11 +48,12 @@ const updateUserProfilePicture = async (request, response) => {
 
 const deleteUser = async (request, response) => {
   await usersModel.deleteUser(request.params.id);
-  return response.status(204).json();
+  return expireToken(response, 204);
 };
 
 export default {
   getAllUsers,
+  getUserById,
   getUserByEmail,
   loginUser,
   createUser,

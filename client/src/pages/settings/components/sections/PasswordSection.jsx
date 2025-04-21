@@ -1,6 +1,27 @@
 import { motion } from "framer-motion";
 
+// import changeUserPassword from "../../../../services/api/changeUserPassword";
+
+// import { useForm } from "react-hook-form";
+// import { z } from "zod";
+// import { zodResolver } from "@hookform/resolvers/zod";
+
+// const passwordFormSchema = z.object({
+//   password: z
+//     .string()
+//     .min(3, "O nome de usuário precisa ter no mínimo 3 caracteres"),
+// });
+
 function PasswordSection() {
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   setError,
+  //   formState: { errors },
+  // } = useForm({
+  //   resolver: zodResolver(passwordFormSchema),
+  // });
+
   return (
     <motion.section
       key={"password"}
@@ -25,7 +46,7 @@ function PasswordSection() {
           </div>
         </div>
 
-        <form noValidate className="w-full max-w-96 space-y-8">
+        <form noValidate className="w-full max-w-md space-y-8">
           <div className="space-y-4">
             <div className="space-y-2">
               <label>Senha atual</label>

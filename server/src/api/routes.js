@@ -23,6 +23,13 @@ router.get("/api/auth", tokensController.verifyToken);
 // Get all users
 router.get("/api/users", usersController.getAllUsers);
 
+// Get user
+router.get(
+  "/api/users/user",
+  tokensMiddleware.authToken,
+  usersController.getUserById
+);
+
 // Login user
 router.post(
   "/api/users/login",
@@ -55,6 +62,7 @@ router.put(
   "/api/users/:id/name",
   tokensMiddleware.authToken,
   usersMiddleware.validateNameField,
+  usersMiddleware.validateUserName,
   usersController.updateUserName
 );
 
@@ -77,7 +85,7 @@ router.put(
 // Delete user
 router.delete(
   "/api/users/:id",
-  // tokensMiddleware.authToken,
+  tokensMiddleware.authToken,
   usersController.deleteUser
 );
 

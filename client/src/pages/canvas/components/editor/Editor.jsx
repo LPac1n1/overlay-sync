@@ -41,37 +41,36 @@ function Editor() {
         return alert("Insira uma imagem válida!");
       }
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        const image = new Image();
-        image.onload = () => {
-          const imageDOM = createRef();
+      const imageDOM = createRef();
+      const imageURL = URL.createObjectURL(file);
 
-          setImages((prev) => {
-            const width = image.width / 5;
-            const height = image.height / 5;
+      console.log(imageURL);
 
-            return [
-              ...prev,
-              {
-                id: `image-${uuid()}`,
-                url: reader.result,
-                name: file.name,
-                html: imageDOM,
-                dimensions: { width, height },
-                position: {
-                  x: event.clientX - width / 2,
-                  y: event.clientY - height / 2,
-                },
-                isSelected: false,
-                zIndex: prev.length + 1,
+      const image = new Image();
+      image.onload = () => {
+        setImages((prev) => {
+          const width = image.width / 5;
+          const height = image.height / 5;
+
+          return [
+            ...prev,
+            {
+              id: `image-${uuid()}`,
+              url: imageURL,
+              name: file.name,
+              html: imageDOM,
+              dimensions: { width, height },
+              position: {
+                x: event.clientX - width / 2,
+                y: event.clientY - height / 2,
               },
-            ];
-          });
-        };
-        image.src = reader.result;
+              isSelected: false,
+              zIndex: prev.length + 1,
+            },
+          ];
+        });
       };
-      reader.readAsDataURL(file);
+      image.src = imageURL;
     });
   };
 

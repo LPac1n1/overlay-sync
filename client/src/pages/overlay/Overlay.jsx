@@ -11,11 +11,11 @@ const transformScale = (playerRect, images) => {
   images.forEach((image) => {
     transformedImages.push({
       id: image.id,
-      src: image.src,
-      x: (image.x - playerRect.x) * scaleX,
-      y: (image.y - playerRect.y) * scaleY,
-      width: image.width * scaleX,
-      height: image.height * scaleY,
+      src: image.url,
+      x: (image.position.x - playerRect.x) * scaleX,
+      y: (image.position.y - playerRect.y) * scaleY,
+      width: image.dimensions.width * scaleX,
+      height: image.dimensions.height * scaleY,
       zIndex: image.zIndex,
     });
   });
